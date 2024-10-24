@@ -1,0 +1,7 @@
+# Configuration for the roar CLI
+# https://github.com/JanMalch/roar
+
+file = "openapi.yml"
+find = "  version: "
+replace = "  version: {{version}}"
+include = ["feat", "fix", "refactor"]

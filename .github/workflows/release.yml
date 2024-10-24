@@ -1,0 +1,52 @@
+name: GitHub Release with binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # allows the action to create a release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: go mod download
+      - name: Build Linux 64 bit executable
+        env:
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -o bin/roar-amd64-linux cmd/cli/main.go 
+      - name: Build Windows 64 bit executable
+        env:
+          GOOS: windows
+          GOARCH: amd64
+        run: go build -o bin/roar-amd64.exe cmd/cli/main.go 
+      - name: Build Darwin AMD 64 bit executable
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+        run: go build -o bin/roar-amd64-darwin cmd/cli/main.go 
+      - name: Build Darwin ARM 64 bit executable
+        env:
+          GOOS: darwin
+          GOARCH: arm64
+        run: go build -o bin/roar-arm64-darwin cmd/cli/main.go 
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        id: create_release
+        with:
+          draft: true
+          prerelease: false
+          files: |
+            bin/roar-amd64-linux
+            bin/roar-amd64.exe
+            bin/roar-amd64-darwin
+            bin/roar-arm64-darwin
