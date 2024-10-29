@@ -122,7 +122,7 @@ func Programmatic(
 	if ltag == "" {
 		util.LogInfo(stdout, "no version tag found, thus assuming initial release")
 	} else {
-		util.LogSuccess(stdout, "determined latest version to be %s", ltag)
+		util.LogInfo(stdout, "determined latest version to be %s", ltag)
 	}
 	util.LogEmptyLine(stdout)
 
