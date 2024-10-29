@@ -133,6 +133,7 @@ func Programmatic(
 	}
 	ccLookup, change, err := conventional.Collect(log)
 	if err != nil {
+		// TODO: support releases without commits somehow? If user just wants to bump the version to e.g. v1.0.0 after v0 phase
 		return "", err
 	}
 	next, err := util.Bump(lsemver, releaseAs, change)
