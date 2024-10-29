@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -22,7 +23,10 @@ var commits = []string{
 }
 
 func main() {
-	runs := 10
+	runs := flag.Int("r", 10, "how many runs the simulation should perform")
+	stabilize := flag.Bool("s", false, "use a stable v1.0.0 at start of simulation")
+	flag.Parse()
+
 	if err := os.MkdirAll(".sim/repos", os.ModePerm); err != nil {
 		panic(err)
 	}
@@ -41,6 +45,9 @@ func main() {
 		panic(err)
 	}
 	defer log.Close()
+
+	fmt.Printf("Repository: %s\nLogs: %s\nRuns: %d\n", repoDir, log.Name(), *runs)
+
 	log.WriteString(fmt.Sprintf("%s | BEGIN SIMULATION OF %d RUNS\n", fmtNow(), runs))
 
 	defer func() {
@@ -69,9 +76,11 @@ func main() {
 		panic(err)
 	}
 
-	makeStable(r) // comment out for v0
+	if *stabilize {
+		makeStable(r)
+	}
 
-	for i := 1; i <= runs; i++ {
+	for i := 1; i <= *runs; i++ {
 		take := rand.Intn(3) + 1
 		log.WriteString(fmt.Sprintf("%s | BEGIN RUN %d WITH %d commits\n", fmtNow(), i, take))
 
