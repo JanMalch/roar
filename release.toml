@@ -4,4 +4,4 @@
 file = "cmd/cli/main.go"
 find = "var VERSION = "
 replace = "var VERSION = \"{{version}}\""
-include = ["feat", "fix", "refactor"]
+include = ["feat", "fix"]
