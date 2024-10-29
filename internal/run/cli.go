@@ -46,6 +46,9 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 	r := git.NewRepo("")
 	if _, err := Programmatic(r, conf.File, conf.Find, conf.Replace, releaseAs, conf.Include, dryRun, os.Stdout, true); err != nil {
 		util.LogError(stderr, "%v", err)
+		if errors.Is(err, steps.ErrRepoNotClean) {
+			util.LogInfo(stdout, "If this is your first commit, it's recommended to use %s as the commit message. No conventional commit type required.", util.Bold("\"Initial commit\""))
+		}
 		return err
 	}
 	return nil
