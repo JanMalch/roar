@@ -8,7 +8,7 @@ import (
 	"github.com/janmalch/roar/models"
 )
 
-var VERSION = "0.1.0"
+var VERSION = "0.2.0"
 
 func main() {
 	var cli models.CLI
