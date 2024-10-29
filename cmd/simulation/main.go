@@ -23,20 +23,20 @@ var commits = []string{
 
 func main() {
 	runs := 10
-	if err := os.MkdirAll(".sim/repos", 0644); err != nil {
+	if err := os.MkdirAll(".sim/repos", os.ModePerm); err != nil {
 		panic(err)
 	}
-	if err := os.MkdirAll(".sim/logs", 0644); err != nil {
+	if err := os.MkdirAll(".sim/logs", os.ModePerm); err != nil {
 		panic(err)
 	}
 
 	id := fmt.Sprintf("sim-%d", time.Now().Unix())
 	repoDir := ".sim/repos/" + id
-	if err := os.Mkdir(repoDir, 0644); err != nil {
+	if err := os.Mkdir(repoDir, os.ModePerm); err != nil {
 		panic(err)
 	}
 
-	log, err := os.OpenFile(fmt.Sprintf(".sim/logs/%s.log", id), os.O_CREATE, 0644)
+	log, err := os.OpenFile(fmt.Sprintf(".sim/logs/%s.log", id), os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +58,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = os.WriteFile(r.PathOf("openapi.yml"), dummy, 0644)
+	err = os.WriteFile(r.PathOf("openapi.yml"), dummy, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
