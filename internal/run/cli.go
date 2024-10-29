@@ -85,14 +85,14 @@ func Programmatic(
 	if err := steps.ConfirmGitRepo(r); err != nil {
 		return "", err
 	}
+	if err := steps.ConfirmClean(r); err != nil {
+		return "", err
+	}
 	branch, err := steps.DetermineCurrentBranch(r)
 	if err != nil {
 		return "", err
 	}
 	util.LogInfo(stdout, "current branch is %s", color.New(color.Bold).Sprint(branch))
-	if err := steps.ConfirmClean(r); err != nil {
-		return "", err
-	}
 
 	origin, err := r.GetOrigin()
 	if err != nil {
