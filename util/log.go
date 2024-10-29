@@ -10,6 +10,11 @@ import (
 var b = color.New(color.Bold)
 var u = color.New(color.Underline)
 
+// Logs an empty line. To be used for creating sections.
+func LogEmptyLine(stdout io.Writer) {
+	fmt.Fprintf(stdout, "\n")
+}
+
 func LogInfo(stdout io.Writer, format string, a ...any) {
 	fmt.Fprintf(stdout, "%s %s\n", SymInfo, fmt.Sprintf(format, a...))
 }

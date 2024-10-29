@@ -121,6 +121,7 @@ func Programmatic(
 	} else {
 		util.LogSuccess(stdout, "determined latest version to be %s", ltag)
 	}
+	util.LogEmptyLine(stdout)
 
 	// handle commits
 	log, err := r.CommitLogSince(ltag)
@@ -161,9 +162,17 @@ func Programmatic(
 		}
 	}
 	util.LogSuccess(stdout, "%scommited as %s", drp, util.Bold(commitMsg))
-	util.LogWarning(stdout, "release commit is %s, in case you want to amend changes", util.Bold("NOT tagged yet"))
+
+	// TODO: make this step configurable, but enabled by default
+	if !dryrun {
+		if err = r.AddTag(ntag); err != nil {
+			return "", err
+		}
+	}
+	util.LogSuccess(stdout, "%stagged as %s", drp, util.Bold(ntag))
+	util.LogEmptyLine(stdout)
 
 	// yay!
-	util.LogSuccess(stdout, "please verify the applied changes and finalize the release by running\n\t%s", util.Bold(fmt.Sprintf("git tag %s && git push && git push --tags", ntag)))
+	util.LogInfo(stdout, "please verify the applied changes and finalize the release by running\n\t%s", util.Bold("git push && git push --tags"))
 	return ntag, nil
 }
