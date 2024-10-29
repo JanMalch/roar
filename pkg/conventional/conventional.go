@@ -41,6 +41,18 @@ func toChange(typ string, breaking bool) util.Change {
 }
 
 func Parse(c git.Commit) *ConventionalCommit {
+	// TODO: casing?
+	if c.Message == "Initial commit" {
+		return &ConventionalCommit{
+			Commit:         c,
+			Type:           "feat",
+			Scope:          "",
+			Title:          c.Message,
+			BreakingChange: false,
+			Change:         util.MINOR_CHANGE,
+		}
+	}
+
 	// FIXME: verify that message is valid!
 	matches := re.FindStringSubmatch(c.Message)
 
