@@ -1,3 +1,12 @@
+## 0.2.1
+
+| type | description | commit |
+|---|---|---|
+| fix | strip type from initial commit | `d23941d4` |
+| fix | correctly write "no notable changes" on version level | `de445add` |
+
+
+
 ## 0.2.0
 
 | type | description | commit |
