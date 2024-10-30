@@ -19,6 +19,7 @@ func generateNewSection(version semver.Version, ccLookup map[string][]convention
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("## %s\n\n", version.String()))
+	hasNotableChanges := false
 
 	for _, k := range keys {
 		if k != "" {
@@ -34,9 +35,9 @@ func generateNewSection(version semver.Version, ccLookup map[string][]convention
 		}
 
 		if len(relevantCcs) == 0 {
-			sb.WriteString("_No relevant changes._\n\n")
 			continue
 		}
+		hasNotableChanges = true
 
 		slices.SortFunc(relevantCcs, func(a, b conventional.ConventionalCommit) int {
 			return strings.Compare(a.Type, b.Type)
@@ -48,6 +49,10 @@ func generateNewSection(version semver.Version, ccLookup map[string][]convention
 			sb.WriteString(fmt.Sprintf("| %s | %s | `%s` |\n", c.Type, c.Title, c.Hash[0:8]))
 		}
 		sb.WriteString("\n")
+	}
+
+	if !hasNotableChanges {
+		sb.WriteString("_No notable changes._\n\n")
 	}
 
 	return sb.String()
