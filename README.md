@@ -22,6 +22,25 @@ replace = "  version: {{version}}" # required: the content to replace the detect
 include = ["feat", "fix", "refactor"] # optional: which conventional commit types to include in the generated changelog. Also defines the order in the changelog
 ```
 
+Running `roar` will look like this:
+
+```
+i current branch is main
+√ git pull
+i determined latest version to be v0.2.0
+
+√ determined next version to be v0.2.1
+√ updated version in cmd/cli/main.go
+√ updated CHANGELOG.md
+√ commited as chore(release): release version v0.2.1
+√ tagged as v0.2.1
+
+i please verify the applied changes and finalize the release by running
+        git push && git push --tags
+```
+
+
+
 ## The name
 
 - Release OpenApi contracts Rapidly
