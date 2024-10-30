@@ -45,7 +45,7 @@ func Parse(c git.Commit) *ConventionalCommit {
 	if c.Message == "Initial commit" {
 		return &ConventionalCommit{
 			Commit:         c,
-			Type:           "feat",
+			Type:           "",
 			Scope:          "",
 			Title:          c.Message,
 			BreakingChange: false,
