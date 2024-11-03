@@ -1,3 +1,13 @@
+## [0.3.0](https://github.com/JanMalch/roar/tree/v0.3.0)
+
+**Full Changelog:** [`v0.2.1...v0.3.0`](https://github.com/JanMalch/roar/compare/v0.2.1...v0.3.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | add links to the generated changelog | [`026b6de0`](https://github.com/JanMalch/roar/commit/026b6de0a9ede789a6b2a22000720c34b800bb41) |
+
+
+
 ## [0.2.1](https://github.com/JanMalch/roar/tree/v0.2.1)
 
 **Full Changelog:** [`v0.2.0...v0.2.1`](https://github.com/JanMalch/roar/compare/v0.2.0...v0.2.1)
