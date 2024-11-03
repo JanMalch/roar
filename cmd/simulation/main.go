@@ -25,7 +25,10 @@ var commits = []string{
 func main() {
 	runs := flag.Int("r", 10, "how many runs the simulation should perform")
 	stabilize := flag.Bool("x", false, "use v1.0.0 at start of simulation")
+	seed := flag.Int64("s", rand.Int63(), "seed for the RNG")
 	flag.Parse()
+
+	rng := rand.New(rand.NewSource(*seed))
 
 	if err := os.MkdirAll(".sim/repos", os.ModePerm); err != nil {
 		panic(err)
@@ -46,9 +49,9 @@ func main() {
 	}
 	defer log.Close()
 
-	fmt.Printf("Repository: %s\nLogs: %s\nRuns: %d\n", repoDir, log.Name(), *runs)
+	fmt.Printf("Seed: %d\nRepository: %s\nLogs: %s\nRuns: %d\n", *seed, repoDir, log.Name(), *runs)
 
-	log.WriteString(fmt.Sprintf("%s | BEGIN SIMULATION OF %d RUNS\n", fmtNow(), runs))
+	log.WriteString(fmt.Sprintf("%s | SEED = %d | BEGIN SIMULATION OF %d RUNS\n", fmtNow(), *seed, runs))
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -81,11 +84,11 @@ func main() {
 	}
 
 	for i := 1; i <= *runs; i++ {
-		take := rand.Intn(3) + 1
+		take := rng.Intn(3) + 1
 		log.WriteString(fmt.Sprintf("%s | BEGIN RUN %d WITH %d commits\n", fmtNow(), i, take))
 
 		for c := 1; c <= take; c++ {
-			message := fmt.Sprintf("%s (run %d, commit %d)", commits[rand.Intn(len(commits))], i, c)
+			message := fmt.Sprintf("%s (run %d, commit %d)", commits[rng.Intn(len(commits))], i, c)
 			log.WriteString(fmt.Sprintf("%s | commit: %s\n", fmtNow(), message))
 			if _, err = r.ExecGit("commit", "--allow-empty", "-m", message); err != nil {
 				panic(err)
