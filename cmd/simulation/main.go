@@ -24,7 +24,7 @@ var commits = []string{
 
 func main() {
 	runs := flag.Int("r", 10, "how many runs the simulation should perform")
-	stabilize := flag.Bool("s", false, "use a stable v1.0.0 at start of simulation")
+	stabilize := flag.Bool("x", false, "use v1.0.0 at start of simulation")
 	flag.Parse()
 
 	if err := os.MkdirAll(".sim/repos", os.ModePerm); err != nil {
