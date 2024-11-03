@@ -21,6 +21,8 @@ func Programmatic(
 	replace string,
 	releaseAs *semver.Version,
 	includedTypes []string,
+	gitService string,
+	gitUrl string,
 	dryrun bool,
 	stdout io.Writer,
 	useColor bool,
@@ -74,6 +76,11 @@ func Programmatic(
 		}
 	}
 
+	gs, known := steps.DetectGitService(origin, gitUrl, gitService)
+	if !known {
+		util.LogInfo(stdout, "no git service detected; configure \"gitService\" and possibly \"gitServiceUrl\" to enable links in the changelog")
+	}
+
 	// tags
 	ltag, lsemver, err := steps.DetermineLatest(r)
 	if err != nil {
@@ -110,7 +117,7 @@ func Programmatic(
 	}
 	util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(p))
 
-	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), next, ccLookup, includedTypes, dryrun); err != nil {
+	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), gs, next, lsemver, ccLookup, includedTypes, dryrun); err != nil {
 		return "", err
 	}
 	util.LogSuccess(stdout, "%supdated %s", drp, util.Bold("CHANGELOG.md"))

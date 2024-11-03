@@ -14,8 +14,8 @@ import (
 func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 	latest, err := semver.NewVersion("0.1.0")
 	require.NoError(t, err)
-
-	actual := generateNewSection(*latest, map[string][]conventional.ConventionalCommit{
+	gs, _ := NewGitService("", "")
+	actual := generateNewSection(gs, *latest, nil, map[string][]conventional.ConventionalCommit{
 		"users": {
 			*conventional.Parse(git.Commit{
 				Message: "fix(users): add user fix",

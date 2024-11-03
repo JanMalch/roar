@@ -102,6 +102,8 @@ func main() {
 			"  version: {{version}}",
 			nil,
 			[]string{"feat", "fix", "refactor"},
+			"github",
+			"https://github.com/JanMalch/roar",
 			false,
 			log,
 			false,

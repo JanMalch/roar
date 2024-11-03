@@ -7,10 +7,12 @@ import (
 )
 
 type Config struct {
-	File    string   `toml:"file"`
-	Find    string   `toml:"find"`
-	Replace string   `toml:"replace"`
-	Include []string `toml:"include"`
+	File          string   `toml:"file"`
+	Find          string   `toml:"find"`
+	Replace       string   `toml:"replace"`
+	Include       []string `toml:"include"`
+	GitService    string   `toml:"git_service"`
+	GitServiceUrl string   `toml:"git_service_url"`
 }
 
 var defaultConf = Config{
