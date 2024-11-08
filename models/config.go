@@ -1,7 +1,9 @@
 package models
 
 import (
+	"errors"
 	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 )
@@ -27,6 +29,12 @@ var headerText = `# Configuration for the roar CLI
 
 `
 
+var (
+	ErrFindIsEmpty    = errors.New("\"find\" may not be empty in config")
+	ErrReplaceIsEmpty = errors.New("\"replace\" may not be empty in config")
+)
+
+// Returns a config and a bool, if the returned config is newly created.
 func ConfigFromFile(path string) (*Config, bool, error) {
 	var conf Config
 	_, err := toml.DecodeFile(path, &conf)
@@ -48,6 +56,12 @@ func ConfigFromFile(path string) (*Config, bool, error) {
 
 	if len(conf.Include) == 0 {
 		conf.Include = defaultConf.Include
+	}
+	if len(strings.TrimSpace(conf.Find)) == 0 {
+		return nil, false, ErrFindIsEmpty
+	}
+	if len(strings.TrimSpace(conf.Replace)) == 0 {
+		return nil, false, ErrReplaceIsEmpty
 	}
 
 	return &conf, false, nil
