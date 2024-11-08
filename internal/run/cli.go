@@ -3,6 +3,7 @@ package run
 import (
 	"io"
 	"os"
+	"time"
 
 	"github.com/Masterminds/semver"
 	"github.com/fatih/color"
@@ -40,8 +41,10 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 		util.LogInfo(stdout, "Created default configuration '%s' because none was found. Thus, running in dry-run mode for the first time.", cli.ConfigFile)
 	}
 
+	today := time.Now()
+
 	r := git.NewRepo("")
-	if _, err := Programmatic(r, conf.File, conf.Find, conf.Replace, releaseAs, conf.Include, conf.GitService, conf.GitServiceUrl, dryRun, os.Stdout, true); err != nil {
+	if _, err := Programmatic(r, conf.File, conf.Find, conf.Replace, releaseAs, conf.Include, conf.GitService, conf.GitServiceUrl, today, dryRun, os.Stdout, true); err != nil {
 		util.LogError(stderr, "%v", err)
 		if errors.Is(err, steps.ErrRepoNotClean) {
 			util.LogInfo(stdout, "If this is your first commit, it's recommended to use %s as the commit message. No conventional commit type required.", util.Bold("\"Initial commit\""))

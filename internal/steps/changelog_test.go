@@ -15,6 +15,7 @@ func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 	latest, err := semver.NewVersion("0.1.0")
 	require.NoError(t, err)
 	gs, _ := NewGitService("", "")
+	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
 	actual := generateNewSection(gs, *latest, nil, map[string][]conventional.ConventionalCommit{
 		"users": {
 			*conventional.Parse(git.Commit{
@@ -39,9 +40,9 @@ func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 				Date:    time.Now(),
 			}),
 		},
-	}, []string{"feat", "fix", "refactor"},
+	}, []string{"feat", "fix", "refactor"}, today,
 	)
-	expected := `## 0.1.0
+	expected := `## 0.1.0 - November 8, 2024
 
 | type | description | commit |
 |---|---|---|

@@ -83,6 +83,8 @@ func main() {
 		makeStable(r)
 	}
 
+	today := time.Now()
+
 	for i := 1; i <= *runs; i++ {
 		take := rng.Intn(3) + 1
 		log.WriteString(fmt.Sprintf("%s | BEGIN RUN %d WITH %d commits\n", fmtNow(), i, take))
@@ -104,6 +106,7 @@ func main() {
 			[]string{"feat", "fix", "refactor"},
 			"github",
 			"https://github.com/JanMalch/roar",
+			today,
 			false,
 			log,
 			false,

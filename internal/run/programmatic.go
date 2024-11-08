@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver"
 	"github.com/fatih/color"
@@ -23,6 +24,7 @@ func Programmatic(
 	includedTypes []string,
 	gitService string,
 	gitUrl string,
+	today time.Time,
 	dryrun bool,
 	stdout io.Writer,
 	useColor bool,
@@ -117,7 +119,7 @@ func Programmatic(
 	}
 	util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(p))
 
-	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), gs, next, lsemver, ccLookup, includedTypes, dryrun); err != nil {
+	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), gs, next, lsemver, ccLookup, includedTypes, today, dryrun); err != nil {
 		return "", err
 	}
 	util.LogSuccess(stdout, "%supdated %s", drp, util.Bold("CHANGELOG.md"))

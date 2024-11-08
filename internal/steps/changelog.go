@@ -5,12 +5,13 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver"
 	"github.com/janmalch/roar/pkg/conventional"
 )
 
-func generateNewSection(gs GitService, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, includedTypes []string) string {
+func generateNewSection(gs GitService, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, includedTypes []string, today time.Time) string {
 	keys := make([]string, 0, len(ccLookup))
 	for k := range ccLookup {
 		keys = append(keys, k)
@@ -18,7 +19,7 @@ func generateNewSection(gs GitService, version semver.Version, prev *semver.Vers
 	slices.Sort(keys)
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("## %s\n\n", gs.FmtHeader(version.String())))
+	sb.WriteString(fmt.Sprintf("## %s - %s\n\n", gs.FmtHeader(version.String()), today.Format("January 2, 2006")))
 
 	cmp := ""
 	if prev != nil {
@@ -66,8 +67,8 @@ func generateNewSection(gs GitService, version semver.Version, prev *semver.Vers
 	return sb.String()
 }
 
-func UpdateChangelog(path string, gs GitService, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, includedTypes []string, dryrun bool) error {
-	content := generateNewSection(gs, version, prev, ccLookup, includedTypes)
+func UpdateChangelog(path string, gs GitService, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, includedTypes []string, today time.Time, dryrun bool) error {
+	content := generateNewSection(gs, version, prev, ccLookup, includedTypes, today)
 
 	b, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
