@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/janmalch/roar/internal/run"
+	"github.com/janmalch/roar/models"
 	"github.com/janmalch/roar/pkg/git"
 )
 
@@ -83,6 +84,14 @@ func main() {
 		makeStable(r)
 	}
 
+	c := models.Config{
+		File:          "openapi.yml",
+		Find:          "  version: ",
+		Replace:       "  version: {{version}}",
+		Include:       []string{"feat", "fix", "refactor"},
+		GitService:    "github",
+		GitServiceUrl: "https://github.com/JanMalch/roar",
+	}
 	today := time.Now()
 
 	for i := 1; i <= *runs; i++ {
@@ -99,13 +108,8 @@ func main() {
 
 		tag, err := run.Programmatic(
 			r,
-			"openapi.yml",
-			"  version: ",
-			"  version: {{version}}",
+			c,
 			nil,
-			[]string{"feat", "fix", "refactor"},
-			"github",
-			"https://github.com/JanMalch/roar",
 			today,
 			false,
 			log,

@@ -9,6 +9,7 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/fatih/color"
 	"github.com/janmalch/roar/internal/steps"
+	"github.com/janmalch/roar/models"
 	"github.com/janmalch/roar/pkg/conventional"
 	"github.com/janmalch/roar/pkg/git"
 	"github.com/janmalch/roar/util"
@@ -17,13 +18,8 @@ import (
 
 func Programmatic(
 	r *git.Repo,
-	p string,
-	find string,
-	replace string,
+	c models.Config,
 	releaseAs *semver.Version,
-	includedTypes []string,
-	gitService string,
-	gitUrl string,
 	today time.Time,
 	dryrun bool,
 	stdout io.Writer,
@@ -37,13 +33,13 @@ func Programmatic(
 		drp = dryRunHint
 	}
 
-	path := r.PathOf(p)
+	path := r.PathOf(c.File)
 
 	// preconditions
-	if err := steps.ValidateFind(find); err != nil {
+	if err := steps.ValidateFind(c.Find); err != nil {
 		return "", err
 	}
-	if err := steps.ValidateReplace(replace); err != nil {
+	if err := steps.ValidateReplace(c.Replace); err != nil {
 		return "", err
 	}
 	if err := steps.ConfirmInputExists(path); err != nil {
@@ -78,7 +74,7 @@ func Programmatic(
 		}
 	}
 
-	gs, known := steps.DetectGitService(origin, gitUrl, gitService)
+	gs, known := steps.DetectGitService(origin, c.GitServiceUrl, c.GitService)
 	if !known {
 		util.LogInfo(stdout, "no git service detected; configure \"gitService\" and possibly \"gitServiceUrl\" to enable links in the changelog")
 	}
@@ -113,13 +109,13 @@ func Programmatic(
 	util.LogSuccess(stdout, "determined next version to be %s", util.Bold(ntag))
 
 	// update files
-	replacement := strings.Replace(replace, "{{version}}", next.String(), 1)
-	if err = steps.FindAndReplace(path, find, replacement, dryrun); err != nil {
+	replacement := strings.Replace(c.Replace, "{{version}}", next.String(), 1)
+	if err = steps.FindAndReplace(path, c.Find, replacement, dryrun); err != nil {
 		return "", err
 	}
-	util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(p))
+	util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(c.File))
 
-	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), gs, next, lsemver, ccLookup, includedTypes, today, dryrun); err != nil {
+	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), gs, next, lsemver, ccLookup, c.Include, today, dryrun); err != nil {
 		return "", err
 	}
 	util.LogSuccess(stdout, "%supdated %s", drp, util.Bold("CHANGELOG.md"))
@@ -127,7 +123,7 @@ func Programmatic(
 	// commit changes
 	commitMsg := fmt.Sprintf("chore(release): release version %s", ntag)
 	if !dryrun {
-		if err := r.Add(p, "CHANGELOG.md"); err != nil {
+		if err := r.Add(c.File, "CHANGELOG.md"); err != nil {
 			return "", err
 		}
 		if err := r.Commit(commitMsg); err != nil {
