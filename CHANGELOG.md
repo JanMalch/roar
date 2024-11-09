@@ -1,3 +1,14 @@
+## [0.4.0](https://github.com/JanMalch/roar/tree/v0.4.0) - November 9, 2024
+
+**Full Changelog:** [`v0.3.0...v0.4.0`](https://github.com/JanMalch/roar/compare/v0.3.0...v0.4.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | add date of release to changelog | [`09d8f592`](https://github.com/JanMalch/roar/commit/09d8f59265af3078374ce7857131a3a034612fc0) |
+| fix | validate find and replace values in config | [`19d846d8`](https://github.com/JanMalch/roar/commit/19d846d8a104b43bfadc861fbccd8028ccf74a2e) |
+
+
+
 ## [0.3.0](https://github.com/JanMalch/roar/tree/v0.3.0)
 
 **Full Changelog:** [`v0.2.1...v0.3.0`](https://github.com/JanMalch/roar/compare/v0.2.1...v0.3.0)
