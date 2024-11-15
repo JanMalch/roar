@@ -1,3 +1,14 @@
+## [0.5.0](https://github.com/JanMalch/roar/tree/v0.5.0) - November 15, 2024
+
+**Full Changelog:** [`v0.4.0...v0.5.0`](https://github.com/JanMalch/roar/compare/v0.4.0...v0.5.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | only log initial commit hint when no commits exist yet | [`a41cfaf0`](https://github.com/JanMalch/roar/commit/a41cfaf099d75b6669064df8c62a0111dc95e90c) |
+| feat | allow for empty commits to bump to a specific version | [`6519977a`](https://github.com/JanMalch/roar/commit/6519977a5a27d04db8bc7c823d338884ee89af45) |
+
+
+
 ## [0.4.0](https://github.com/JanMalch/roar/tree/v0.4.0) - November 9, 2024
 
 **Full Changelog:** [`v0.3.0...v0.4.0`](https://github.com/JanMalch/roar/compare/v0.3.0...v0.4.0)
