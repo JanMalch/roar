@@ -25,7 +25,7 @@ var commits = []string{
 
 func main() {
 	runs := flag.Int("r", 10, "how many runs the simulation should perform")
-	stabilize := flag.Bool("x", false, "use v1.0.0 at start of simulation")
+	initial := flag.String("x", "", "use v1.0.0 at start of simulation")
 	seed := flag.Int64("s", rand.Int63(), "seed for the RNG")
 	flag.Parse()
 
@@ -80,8 +80,8 @@ func main() {
 		panic(err)
 	}
 
-	if *stabilize {
-		makeStable(r)
+	if len(*initial) > 0 {
+		makeStable(r, *initial)
 	}
 
 	c := models.Config{
@@ -125,8 +125,8 @@ func main() {
 	}
 }
 
-func makeStable(r *git.Repo) {
-	if _, err := r.ExecGit("tag", "v1.0.0"); err != nil {
+func makeStable(r *git.Repo, x string) {
+	if _, err := r.ExecGit("tag", "v"+x); err != nil {
 		panic(err)
 	}
 }
