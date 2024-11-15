@@ -60,5 +60,8 @@ func Bump(latest *semver.Version, releaseAs *semver.Version, change Change) (sem
 			return none, ErrNextNotAfterLatest
 		}
 	}
+	if !next.GreaterThan(latest) {
+		return none, ErrNextNotAfterLatest
+	}
 	return next, nil
 }
