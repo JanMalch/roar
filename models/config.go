@@ -1,6 +1,7 @@
 package models
 
 import (
+	"bytes"
 	"errors"
 	"os"
 	"strings"
@@ -39,7 +40,9 @@ var defaultConf = Config{
 var headerText = `# Configuration for the roar CLI
 # https://github.com/JanMalch/roar
 
-# FIXME: change the changelog URL templates to point to your repository. Using GitHub is just an example.
+`
+
+var changelogUrlNote = `# FIXME: change the changelog URL templates to point to your repository. Using GitHub is just an example.
 `
 
 var (
@@ -57,11 +60,13 @@ func ConfigFromFile(path string) (*Config, bool, error) {
 		return nil, false, err
 	}
 	if os.IsNotExist(err) {
-		d, err := toml.Marshal(defaultConf)
-		if err != nil {
+		buff := new(bytes.Buffer)
+		enc := toml.NewEncoder(buff)
+		enc.Indent = ""
+		if err := enc.Encode(defaultConf); err != nil {
 			return nil, false, err
 		}
-		c := headerText + string(d)
+		c := headerText + buff.String() + changelogUrlNote
 		if err := os.WriteFile(path, []byte(c), 0644); err != nil {
 			return nil, false, err
 		}
