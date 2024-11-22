@@ -4,4 +4,10 @@
 file = "cmd/cli/main.go"
 find = "var VERSION = "
 replace = "var VERSION = \"{{version}}\""
+
+[changelog]
 include = ["feat", "fix"]
+url_commit = "https://github.com/JanMalch/roar/commit/{{hash}}"
+url_browse_at_tag = "https://github.com/JanMalch/roar/tree/v{{version}}"
+url_compare_tags = "https://github.com/JanMalch/roar/compare/v{{previous}}...v{{version}}"
+url_commits_for_tag = "https://github.com/JanMalch/roar/commits/v{{version}}"

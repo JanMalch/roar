@@ -85,12 +85,16 @@ func main() {
 	}
 
 	c := models.Config{
-		File:          "openapi.yml",
-		Find:          "  version: ",
-		Replace:       "  version: {{version}}",
-		Include:       []string{"feat", "fix", "refactor"},
-		GitService:    "github",
-		GitServiceUrl: "https://github.com/JanMalch/roar",
+		File:    "openapi.yml",
+		Find:    "  version: ",
+		Replace: "  version: {{version}}",
+		Changelog: models.ChangelogConfig{
+			Include:          []string{"feat", "fix", "refactor"},
+			UrlCommit:        "https://github.com/JanMalch/roar/commit/{{hash}}",
+			UrlBrowseAtTag:   "https://github.com/JanMalch/roar/tree/v{{version}}",
+			UrlCompareTags:   "https://github.com/JanMalch/roar/compare/v{{previous}}...v{{version}}",
+			UrlCommitsForTag: "https://github.com/JanMalch/roar/commits/v{{version}}",
+		},
 	}
 	today := time.Now()
 

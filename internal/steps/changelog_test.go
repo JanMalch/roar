@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
+	"github.com/janmalch/roar/models"
 	"github.com/janmalch/roar/pkg/conventional"
 	"github.com/janmalch/roar/pkg/git"
 	"github.com/stretchr/testify/assert"
@@ -14,9 +15,15 @@ import (
 func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 	latest, err := semver.NewVersion("0.1.0")
 	require.NoError(t, err)
-	gs, _ := NewGitService("", "")
+	conf := models.ChangelogConfig{
+		Include:          []string{"feat", "fix", "refactor"},
+		UrlCommit:        "",
+		UrlBrowseAtTag:   "",
+		UrlCompareTags:   "",
+		UrlCommitsForTag: "",
+	}
 	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
-	actual := generateNewSection(gs, *latest, nil, map[string][]conventional.ConventionalCommit{
+	actual := generateNewSection(&conf, *latest, nil, map[string][]conventional.ConventionalCommit{
 		"users": {
 			*conventional.Parse(git.Commit{
 				Message: "fix(users): add user fix",
@@ -40,7 +47,7 @@ func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 				Date:    time.Now(),
 			}),
 		},
-	}, []string{"feat", "fix", "refactor"}, today,
+	}, today,
 	)
 	expected := `## 0.1.0 - November 8, 2024
 

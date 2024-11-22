@@ -74,11 +74,6 @@ func Programmatic(
 		}
 	}
 
-	gs, known := steps.DetectGitService(origin, c.GitServiceUrl, c.GitService)
-	if !known {
-		util.LogInfo(stdout, "no git service detected; configure \"gitService\" and possibly \"gitServiceUrl\" to enable links in the changelog")
-	}
-
 	// tags
 	ltag, lsemver, err := steps.DetermineLatest(r)
 	if err != nil {
@@ -116,7 +111,7 @@ func Programmatic(
 	}
 	util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(c.File))
 
-	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), gs, next, lsemver, ccLookup, c.Include, today, dryrun); err != nil {
+	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), &c.Changelog, next, lsemver, ccLookup, today, dryrun); err != nil {
 		return "", err
 	}
 	util.LogSuccess(stdout, "%supdated %s", drp, util.Bold("CHANGELOG.md"))
