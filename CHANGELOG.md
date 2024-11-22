@@ -1,3 +1,14 @@
+## [0.6.0](https://github.com/JanMalch/roar/tree/v0.6.0) - November 22, 2024
+
+**Full Changelog:** [`v0.5.0...v0.6.0`](https://github.com/JanMalch/roar/compare/v0.5.0...v0.6.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | add note for URLs in generated default config | [`383eb732`](https://github.com/JanMalch/roar/commit/383eb732ff7b2fae8dcdbc21c73d4618e3521bb2) |
+| feat | use URL templates in changelog | [`7cd7471f`](https://github.com/JanMalch/roar/commit/7cd7471f5a61d25aedaa9032c19ad67e67fb22fc) |
+
+
+
 ## [0.5.0](https://github.com/JanMalch/roar/tree/v0.5.0) - November 15, 2024
 
 **Full Changelog:** [`v0.4.0...v0.5.0`](https://github.com/JanMalch/roar/compare/v0.4.0...v0.5.0)
