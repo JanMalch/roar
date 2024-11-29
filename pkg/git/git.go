@@ -111,6 +111,7 @@ func (r *Repo) AddTag(name string) error {
 }
 
 func (r *Repo) LatestVersionTag() (string, error) {
+	// not using r.ExecGit because of CombinedOutput
 	cmd := exec.Command("git", "tag", "--sort=-version:refname")
 	if r.Dir != "" {
 		cmd.Dir = r.Dir

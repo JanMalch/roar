@@ -28,6 +28,13 @@ func setupDirtyRepo(t *testing.T) *git.Repo {
 	return r
 }
 
+func makeTestCommit(t *testing.T, r *git.Repo) {
+	err := r.Add(".")
+	require.NoError(t, err, "setup failed: error while adding files to git")
+	err = r.Commit("test commit")
+	require.NoError(t, err, "setup failed: error while commiting files")
+}
+
 func TestIsGitRepoFalse(t *testing.T) {
 	r := setupDirtyRepo(t)
 	isRepo := r.IsGitRepo()
@@ -44,11 +51,7 @@ func TestIsCleanFalse(t *testing.T) {
 
 func TestIsCleanTrue(t *testing.T) {
 	r := setupDirtyRepo(t)
-
-	err := r.Add(".")
-	require.NoError(t, err, "setup failed: error while adding files to git")
-	err = r.Commit("test commit")
-	require.NoError(t, err, "setup failed: error while commiting files")
+	makeTestCommit(t, r)
 
 	clean, err := r.IsClean()
 	if assert.NoError(t, err) {
@@ -62,5 +65,91 @@ func TestGetOriginNone(t *testing.T) {
 	origin, err := r.GetOrigin()
 	if assert.NoError(t, err) {
 		assert.Equal(t, "", origin, "expected the repository to have no origin")
+	}
+}
+
+func TestGetOriginSet(t *testing.T) {
+	r := setupDirtyRepo(t)
+	r.ExecGit("remote", "add", "origin", "https://github.com/JanMalch/roar-test")
+
+	origin, err := r.GetOrigin()
+	if assert.NoError(t, err) {
+		assert.Equal(t, "https://github.com/JanMalch/roar-test", origin, "expected the repository to have an origin")
+	}
+}
+
+func TestHasCommitsTrue(t *testing.T) {
+	r := setupDirtyRepo(t)
+	makeTestCommit(t, r)
+
+	hasCommits, err := r.HasCommits()
+	if assert.NoError(t, err) {
+		assert.True(t, hasCommits, "expected the repository to have commits")
+	}
+}
+
+func TestHasCommitsFalse(t *testing.T) {
+	r := setupDirtyRepo(t)
+
+	hasCommits, err := r.HasCommits()
+	if assert.NoError(t, err) {
+		assert.False(t, hasCommits, "expected the repository to NOT have commits")
+	}
+}
+
+func TestCurrentBranchName(t *testing.T) {
+	r := setupDirtyRepo(t)
+	makeTestCommit(t, r)
+
+	branch, err := r.CurrentBranchName()
+	if assert.NoError(t, err) {
+		assert.Equal(t, "main", branch, "expected the current branch to be main")
+	}
+}
+
+func TestNoTagsYet(t *testing.T) {
+	r := setupDirtyRepo(t)
+	makeTestCommit(t, r)
+	v, err := r.LatestVersionTag()
+	if assert.NoError(t, err) {
+		assert.Equal(t, "", v, "expected the latest tag to be none")
+	}
+}
+
+func TestExistingTags(t *testing.T) {
+	r := setupDirtyRepo(t)
+	makeTestCommit(t, r)
+	assert.NoError(t, r.AddTag("v0.0.1"))
+	v, err := r.LatestVersionTag()
+	if assert.NoError(t, err) {
+		assert.Equal(t, "v0.0.1", v, "expected the latest tag to be v0.0.1")
+	}
+	assert.NoError(t, r.AddTag("v0.0.2"))
+	v, err = r.LatestVersionTag()
+	if assert.NoError(t, err) {
+		assert.Equal(t, "v0.0.2", v, "expected the latest tag to be v0.0.2")
+	}
+}
+
+func TestContentfulCommitLogSinceTag(t *testing.T) {
+	r := setupDirtyRepo(t)
+	makeTestCommit(t, r)
+	assert.NoError(t, r.AddTag("v0.0.1"))
+	r.ExecGit("commit", "-m='second commit'", "--allow-empty")
+	r.ExecGit("commit", "-m='third commit'", "--allow-empty")
+	log, err := r.CommitLogSince("v0.0.1")
+	if assert.NoError(t, err) {
+		assert.Len(t, log, 2, "expected the log to contain two commits")
+	}
+}
+
+func TestContentfulCommitLogSinceInitial(t *testing.T) {
+	r := setupDirtyRepo(t)
+	makeTestCommit(t, r)
+	r.ExecGit("commit", "-m='second commit'", "--allow-empty")
+	r.ExecGit("commit", "-m='third commit'", "--allow-empty")
+	log, err := r.CommitLogSince("")
+	if assert.NoError(t, err) {
+		assert.Len(t, log, 3, "expected the log to contain three commits")
 	}
 }
