@@ -111,7 +111,7 @@ func Programmatic(
 	} else {
 		for _, u := range c.Updates {
 			path := r.PathOf(u.File)
-			replacement := strings.Replace(u.Replace, "{{version}}", next.String(), 1)
+			replacement := strings.Replace(u.Replace, "{{version}}", next.String(), -1)
 			if err = steps.FindAndReplace(path, u.Find, replacement, dryrun); err != nil {
 				return "", err
 			}
