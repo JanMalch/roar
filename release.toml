@@ -6,6 +6,11 @@ file = "cmd/cli/main.go"
 find = "var VERSION = "
 replace = "var VERSION = \"{{version}}\""
 
+[[update]]
+file = "README.md"
+find = "Download the standalone binary from the latest "
+replace = "Download the standalone binary from the latest [v{{version}} release page](https://github.com/JanMalch/roar/releases/tag/v{{version}}) and just run it. No installation required."
+
 [changelog]
 include = ["feat", "fix"]
 url_commit = "https://github.com/JanMalch/roar/commit/{{hash}}"
