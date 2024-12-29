@@ -85,9 +85,13 @@ func main() {
 	}
 
 	c := models.Config{
-		File:    "openapi.yml",
-		Find:    "  version: ",
-		Replace: "  version: {{version}}",
+		Updates: []models.UpdateConfig{
+			{
+				File:    "openapi.yml",
+				Find:    "  version: ",
+				Replace: "  version: {{version}}",
+			},
+		},
 		Changelog: models.ChangelogConfig{
 			Include:          []string{"feat", "fix", "refactor"},
 			UrlCommit:        "https://github.com/JanMalch/roar/commit/{{hash}}",

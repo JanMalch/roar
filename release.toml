@@ -1,6 +1,7 @@
 # Configuration for the roar CLI
 # https://github.com/JanMalch/roar
 
+[[update]]
 file = "cmd/cli/main.go"
 find = "var VERSION = "
 replace = "var VERSION = \"{{version}}\""

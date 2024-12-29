@@ -33,17 +33,18 @@ func Programmatic(
 		drp = dryRunHint
 	}
 
-	path := r.PathOf(c.File)
-
 	// preconditions
-	if err := steps.ValidateFind(c.Find); err != nil {
-		return "", err
-	}
-	if err := steps.ValidateReplace(c.Replace); err != nil {
-		return "", err
-	}
-	if err := steps.ConfirmInputExists(path); err != nil {
-		return "", err
+	for _, u := range c.Updates {
+		path := r.PathOf(u.File)
+		if err := steps.ValidateFind(u.Find); err != nil {
+			return "", err
+		}
+		if err := steps.ValidateReplace(u.Replace); err != nil {
+			return "", err
+		}
+		if err := steps.ConfirmInputExists(path); err != nil {
+			return "", err
+		}
 	}
 	if err := steps.ConfirmGitRepo(r); err != nil {
 		return "", err
@@ -105,11 +106,18 @@ func Programmatic(
 	util.LogSuccess(stdout, "determined next version to be %s", util.Bold(ntag))
 
 	// update files
-	replacement := strings.Replace(c.Replace, "{{version}}", next.String(), 1)
-	if err = steps.FindAndReplace(path, c.Find, replacement, dryrun); err != nil {
-		return "", err
+	if len(c.Updates) == 0 {
+		util.LogWarning(stdout, "No update instructions defined in configuration file. Did you forget to add at least one [[update]] section?")
+	} else {
+		for _, u := range c.Updates {
+			path := r.PathOf(u.File)
+			replacement := strings.Replace(u.Replace, "{{version}}", next.String(), 1)
+			if err = steps.FindAndReplace(path, u.Find, replacement, dryrun); err != nil {
+				return "", err
+			}
+			util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(u.File))
+		}
 	}
-	util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(c.File))
 
 	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), &c.Changelog, next, lsemver, ccLookup, today, dryrun); err != nil {
 		return "", err
@@ -119,7 +127,12 @@ func Programmatic(
 	// commit changes
 	commitMsg := fmt.Sprintf("chore(release): release version %s", ntag)
 	if !dryrun {
-		if err := r.Add(c.File, "CHANGELOG.md"); err != nil {
+		for _, u := range c.Updates {
+			if err := r.Add(u.File); err != nil {
+				return "", err
+			}
+		}
+		if err := r.Add("CHANGELOG.md"); err != nil {
 			return "", err
 		}
 		if err := r.Commit(commitMsg); err != nil {

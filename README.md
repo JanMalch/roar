@@ -15,6 +15,7 @@ The default configuration is for OpenAPI files indented with 2 spaces... so you'
 A full configuration might look like this:
 
 ```toml
+[[update]] # you can define as many updates, as you like
 file = "openapi.yml" # required: the file to make changes to
 find = "  version: " # required: a string to detect the line to update. If it starts with a ^ it is interpreted as regex in GoLang syntax. Otherwise it is used as line prefix.
 replace = "  version: {{version}}" # required: the content to replace the detected line with. Must contain the "{{version}}" placeholder.

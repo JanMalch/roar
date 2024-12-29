@@ -9,6 +9,12 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+type UpdateConfig struct {
+	File    string `toml:"file"`
+	Find    string `toml:"find"`
+	Replace string `toml:"replace"`
+}
+
 type ChangelogConfig struct {
 	Include          []string `toml:"include"`
 	UrlCommit        string   `toml:"url_commit"`
@@ -18,16 +24,18 @@ type ChangelogConfig struct {
 }
 
 type Config struct {
-	File      string          `toml:"file"`
-	Find      string          `toml:"find"`
-	Replace   string          `toml:"replace"`
+	Updates   []UpdateConfig  `toml:"update"`
 	Changelog ChangelogConfig `toml:"changelog"`
 }
 
 var defaultConf = Config{
-	File:    "openapi.yml",
-	Find:    "  version: ",
-	Replace: "  version: {{version}}",
+	Updates: []UpdateConfig{
+		{
+			File:    "openapi.yml",
+			Find:    "  version: ",
+			Replace: "  version: {{version}}",
+		},
+	},
 	Changelog: ChangelogConfig{
 		Include:          []string{"feat", "fix", "refactor"},
 		UrlCommit:        "https://github.com/owner/repo/commit/{{hash}}",
@@ -76,11 +84,13 @@ func ConfigFromFile(path string) (*Config, bool, error) {
 	if len(conf.Changelog.Include) == 0 {
 		conf.Changelog.Include = defaultConf.Changelog.Include
 	}
-	if len(strings.TrimSpace(conf.Find)) == 0 {
-		return nil, false, ErrFindIsEmpty
-	}
-	if len(strings.TrimSpace(conf.Replace)) == 0 {
-		return nil, false, ErrReplaceIsEmpty
+	for _, u := range conf.Updates {
+		if len(strings.TrimSpace(u.Find)) == 0 {
+			return nil, false, ErrFindIsEmpty
+		}
+		if len(strings.TrimSpace(u.Replace)) == 0 {
+			return nil, false, ErrReplaceIsEmpty
+		}
 	}
 	if strings.HasPrefix(conf.Changelog.UrlCommit, "https://github.com/owner/repo/") {
 		return nil, false, ErrDefaultChangelogUrls
