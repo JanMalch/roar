@@ -1,3 +1,14 @@
+## [0.7.0](https://github.com/JanMalch/roar/tree/v0.7.0) - December 29, 2024
+
+**Full Changelog:** [`v0.6.0...v0.7.0`](https://github.com/JanMalch/roar/compare/v0.6.0...v0.7.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | allow unlimited amount of version placeholders in replacement string | [`0b894206`](https://github.com/JanMalch/roar/commit/0b894206278f8537b1c0dc7727a90f0fdfd24e9e) |
+| feat | support multiple files to be updated | [`d0ae3864`](https://github.com/JanMalch/roar/commit/d0ae386452b75e62016665398ac58abab5c2b7b9) |
+
+
+
 ## [0.6.0](https://github.com/JanMalch/roar/tree/v0.6.0) - November 22, 2024
 
 **Full Changelog:** [`v0.5.0...v0.6.0`](https://github.com/JanMalch/roar/compare/v0.5.0...v0.6.0)
