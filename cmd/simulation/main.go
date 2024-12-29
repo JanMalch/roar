@@ -25,7 +25,7 @@ var commits = []string{
 
 func main() {
 	runs := flag.Int("r", 10, "how many runs the simulation should perform")
-	initial := flag.String("x", "", "use v1.0.0 at start of simulation")
+	initial := flag.String("x", "", "set the initial version of the simulation")
 	seed := flag.Int64("s", rand.Int63(), "seed for the RNG")
 	flag.Parse()
 
