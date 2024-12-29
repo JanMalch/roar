@@ -19,10 +19,12 @@ file = "openapi.yml" # required: the file to make changes to
 find = "  version: " # required: a string to detect the line to update. If it starts with a ^ it is interpreted as regex in GoLang syntax. Otherwise it is used as line prefix.
 replace = "  version: {{version}}" # required: the content to replace the detected line with. Must contain the "{{version}}" placeholder.
 
-include = ["feat", "fix", "refactor"] # optional: which conventional commit types to include in the generated changelog. Also defines the order in the changelog.
-
-git_service = "gitlab" # optional: configure the used git service for links in the changelog. Should be one of "github", "gitlab", or "bitbucket".
-git_service_url = "https://internal-git.mycompany.com" # optional: configure the URL if the CLI fails to properly infer it from the git origin.
+[changelog]
+include = ["feat", "fix"] # optional: which conventional commit types to include in the generated changelog. Also defines the order in the changelog.
+url_commit = "https://github.com/my-org/my-repo/commit/{{hash}}"
+url_browse_at_tag = "https://github.com/my-org/my-repo/tree/v{{version}}"
+url_compare_tags = "https://github.com/my-org/my-repo/compare/v{{previous}}...v{{version}}"
+url_commits_for_tag = "https://github.com/my-org/my-repo/commits/v{{version}}"
 ```
 
 Running `roar` will look like this:
@@ -33,7 +35,7 @@ i current branch is main
 i determined latest version to be v0.2.0
 
 √ determined next version to be v0.2.1
-√ updated version in cmd/cli/main.go
+√ updated version in openapi.yml
 √ updated CHANGELOG.md
 √ commited as chore(release): release version v0.2.1
 √ tagged as v0.2.1
