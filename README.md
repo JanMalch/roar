@@ -51,3 +51,7 @@ i please verify the applied changes and finalize the release by running
 
 - Release OpenApi contracts Rapidly
 - Release Of yet Another Release
+- Release Often and Rapidly
+- Release Orchestrated And Reliable
+- Release On Automated Rules
+- Rapidly Organize And Release
