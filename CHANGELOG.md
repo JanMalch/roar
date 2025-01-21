@@ -1,3 +1,13 @@
+## [0.7.1](https://github.com/JanMalch/roar/tree/v0.7.1) - January 21, 2025
+
+**Full Changelog:** [`v0.7.0...v0.7.1`](https://github.com/JanMalch/roar/compare/v0.7.0...v0.7.1)
+
+| type | description | commit |
+|---|---|---|
+| fix | prevent crash when parsing non-conventional commit | [`b70b587b`](https://github.com/JanMalch/roar/commit/b70b587bbafd719d151975a5f883a0a34fc5ab2d) |
+
+
+
 ## [0.7.0](https://github.com/JanMalch/roar/tree/v0.7.0) - December 29, 2024
 
 **Full Changelog:** [`v0.6.0...v0.7.0`](https://github.com/JanMalch/roar/compare/v0.6.0...v0.7.0)
