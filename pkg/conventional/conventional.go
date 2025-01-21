@@ -55,6 +55,9 @@ func Parse(c git.Commit) *ConventionalCommit {
 
 	// FIXME: verify that message is valid!
 	matches := re.FindStringSubmatch(c.Message)
+	if len(matches) == 0 {
+		return nil
+	}
 
 	title := ""
 	for i := len(matches) - 1; i > 5; i-- {
