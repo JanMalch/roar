@@ -1,3 +1,13 @@
+## [0.8.0](https://github.com/JanMalch/roar/tree/v0.8.0) - February 7, 2025
+
+**Full Changelog:** [`v0.7.1...v0.8.0`](https://github.com/JanMalch/roar/compare/v0.7.1...v0.8.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | remove git pull and add branch check | [`0764e51e`](https://github.com/JanMalch/roar/commit/0764e51e99070b3f4dcc7e6f56f4926de17563d4) |
+
+
+
 ## [0.7.1](https://github.com/JanMalch/roar/tree/v0.7.1) - January 21, 2025
 
 **Full Changelog:** [`v0.7.0...v0.7.1`](https://github.com/JanMalch/roar/compare/v0.7.0...v0.7.1)
