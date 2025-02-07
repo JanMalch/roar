@@ -15,6 +15,8 @@ The default configuration is for OpenAPI files indented with 2 spaces... so you'
 A full configuration might look like this:
 
 ```toml
+branch = "main" # optional: verify you are on the correct branch. Also supports regex by starting with a ^ like branch = "^release/"
+
 [[update]] # you can define as many updates, as you like
 file = "openapi.yml" # required: the file to make changes to
 find = "  version: " # required: a string to detect the line to update. If it starts with a ^ it is interpreted as regex in GoLang syntax. Otherwise it is used as line prefix.
@@ -31,8 +33,7 @@ url_commits_for_tag = "https://github.com/my-org/my-repo/commits/v{{version}}"
 Running `roar` will look like this:
 
 ```
-i current branch is main
-√ git pull
+√ current branch 'main' matches 'main' pattern
 i determined latest version to be v0.2.0
 
 √ determined next version to be v0.2.1

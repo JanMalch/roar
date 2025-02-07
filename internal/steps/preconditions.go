@@ -2,6 +2,7 @@ package steps
 
 import (
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -15,6 +16,7 @@ var (
 	ErrRepoNotClean      = errors.New("git repository is not clean")
 	ErrInvalidFind       = errors.New("find argument is invalid")
 	ErrInvalidReplace    = errors.New("replace argument is invalid")
+	ErrInvalidBranch     = errors.New("current branch doesn't match expected branch")
 )
 
 func ValidateFind(find string) error {
@@ -49,11 +51,27 @@ func ConfirmGitRepo(r *git.Repo) error {
 	}
 }
 
-func DetermineCurrentBranch(r *git.Repo) (string, error) {
-	if branch, err := r.CurrentBranchName(); err != nil {
-		return "", errors.Wrap(err, "failed to determine current branch name")
-	} else {
+func ValidateBranch(r *git.Repo, expected string) (string, error) {
+	branch, err := r.CurrentBranchName()
+	if err != nil {
+		return branch, errors.Wrap(err, "failed to determine current branch name")
+	}
+	if expected == "" {
 		return branch, nil
+	}
+	if strings.HasPrefix(expected, "^") || strings.HasPrefix(expected, "(?i)^") {
+		regex := regexp.MustCompile(expected)
+		if regex.MatchString(branch) {
+			return branch, nil
+		} else {
+			return branch, ErrInvalidBranch
+		}
+	} else {
+		if expected == branch {
+			return branch, nil
+		} else {
+			return branch, ErrInvalidBranch
+		}
 	}
 }
 

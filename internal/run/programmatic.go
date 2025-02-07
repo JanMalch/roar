@@ -52,27 +52,12 @@ func Programmatic(
 	if err := steps.ConfirmClean(r); err != nil {
 		return "", err
 	}
-	branch, err := steps.DetermineCurrentBranch(r)
+	branch, err := steps.ValidateBranch(r, c.Branch)
 	if err != nil {
 		return "", err
 	}
-	util.LogInfo(stdout, "current branch is %s", color.New(color.Bold).Sprint(branch))
-
-	origin, err := r.GetOrigin()
-	if err != nil {
-		return "", err
-	}
-	if origin == "" {
-		util.LogInfo(stdout, "no origin is set, so %s is skipped", boldGitPull)
-	} else {
-		if dryrun {
-			util.LogInfo(stdout, "%s%s", drp, boldGitPull)
-		} else {
-			if err = r.Pull(); err != nil {
-				return "", errors.Wrap(err, "failed to pull to ensure freshness")
-			}
-			util.LogSuccess(stdout, boldGitPull)
-		}
+	if c.Branch != "" {
+		util.LogSuccess(stdout, "current branch %s matches %s pattern", color.New(color.Bold).Sprint(branch), color.New(color.Bold).Sprint(c.Branch))
 	}
 
 	// tags

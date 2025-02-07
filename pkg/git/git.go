@@ -81,20 +81,6 @@ func (r *Repo) CurrentBranchName() (string, error) {
 	return out, nil
 }
 
-func (r *Repo) GetOrigin() (string, error) {
-	out, err := r.ExecGit("config", "--get", "remote.origin.url")
-	// TODO: how to improve this?
-	if err != nil {
-		return "", nil
-	}
-	return out, nil
-}
-
-func (r *Repo) Pull() error {
-	_, err := r.ExecGit("pull")
-	return err
-}
-
 func (r *Repo) Add(pathspec ...string) error {
 	_, err := r.ExecGit(prepend("add", pathspec)...)
 	return err

@@ -85,6 +85,7 @@ func main() {
 	}
 
 	c := models.Config{
+		Branch: "main",
 		Updates: []models.UpdateConfig{
 			{
 				File:    "openapi.yml",

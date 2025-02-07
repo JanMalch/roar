@@ -24,6 +24,7 @@ type ChangelogConfig struct {
 }
 
 type Config struct {
+	Branch    string          `toml:"branch"`
 	Updates   []UpdateConfig  `toml:"update"`
 	Changelog ChangelogConfig `toml:"changelog"`
 }

@@ -14,7 +14,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var boldGitPull = util.Bold("git pull")
 var dryRunHint = color.New(color.BgWhite, color.FgBlack).Sprint(" dry-run ") + " "
 
 func AsCli(cli models.CLI, stdout, stderr io.Writer) error {

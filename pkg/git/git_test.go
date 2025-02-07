@@ -59,25 +59,6 @@ func TestIsCleanTrue(t *testing.T) {
 	}
 }
 
-func TestGetOriginNone(t *testing.T) {
-	r := setupDirtyRepo(t)
-
-	origin, err := r.GetOrigin()
-	if assert.NoError(t, err) {
-		assert.Equal(t, "", origin, "expected the repository to have no origin")
-	}
-}
-
-func TestGetOriginSet(t *testing.T) {
-	r := setupDirtyRepo(t)
-	r.ExecGit("remote", "add", "origin", "https://github.com/JanMalch/roar-test")
-
-	origin, err := r.GetOrigin()
-	if assert.NoError(t, err) {
-		assert.Equal(t, "https://github.com/JanMalch/roar-test", origin, "expected the repository to have an origin")
-	}
-}
-
 func TestHasCommitsTrue(t *testing.T) {
 	r := setupDirtyRepo(t)
 	makeTestCommit(t, r)
