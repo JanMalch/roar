@@ -6,6 +6,21 @@ _Single-purpose CLI for opioniated semantic releases._
 
 Download the standalone binary from the latest [v0.8.0 release page](https://github.com/JanMalch/roar/releases/tag/v0.8.0) and just run it. No installation required.
 
+You can also use the following script. Make sure you set the correct `platform`, which must be the name of a [release asset](https://github.com/JanMalch/roar/releases/latest).
+
+```shell
+#!/bin/sh
+platform="roar-arm64-darwin"
+url=$(curl -s https://api.github.com/repos/JanMalch/roar/releases/latest | grep "browser_download_url.*${platform}" | cut -d : -f 2,3 | tr -d '"' | xargs echo -n)
+curl -sS -L -o roar "$url"
+chmod +x ./roar
+# for OS X (optional), see https://superuser.com/a/28400
+# xattr -d com.apple.quarantine ./roar
+./roar -v
+```
+
+Verify it works by running `roar -v` or `roar -h`.
+
 ## Usage
 
 Getting started is as simple as just running the CLI in a git project.
