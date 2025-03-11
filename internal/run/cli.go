@@ -3,6 +3,7 @@ package run
 import (
 	"io"
 	"os"
+	"slices"
 	"time"
 
 	"github.com/Masterminds/semver"
@@ -39,7 +40,7 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 		dryRun = true
 		util.LogInfo(stdout, "Created default configuration '%s' because none was found. Thus, running in dry-run mode for the first time.", cli.ConfigFile)
 	}
-
+	patch(conf, cli)
 	today := time.Now()
 
 	r := git.NewRepo("")
@@ -54,4 +55,12 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 		return err
 	}
 	return nil
+}
+
+func patch(config *models.Config, cli models.CLI) {
+	patchedIncludes := append(config.Changelog.Include, cli.Include...)
+	patchedIncludes = slices.DeleteFunc(patchedIncludes, func(include string) bool {
+		return slices.Contains(cli.Exclude, include)
+	})
+	config.Changelog.Include = slices.Compact(patchedIncludes)
 }
