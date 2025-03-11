@@ -1,3 +1,15 @@
+## [0.9.0](https://github.com/JanMalch/roar/tree/v0.9.0) - March 11, 2025
+
+**Full Changelog:** [`v0.8.0...v0.9.0`](https://github.com/JanMalch/roar/compare/v0.8.0...v0.9.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | allow overwriting include config via CLI options | [`3323c357`](https://github.com/JanMalch/roar/commit/3323c357a9ca6458b840d9fe9f1431318db5a10c) |
+
+### deps
+
+
+
 ## [0.8.0](https://github.com/JanMalch/roar/tree/v0.8.0) - February 7, 2025
 
 **Full Changelog:** [`v0.7.1...v0.8.0`](https://github.com/JanMalch/roar/compare/v0.7.1...v0.8.0)
