@@ -81,6 +81,14 @@ func (r *Repo) CurrentBranchName() (string, error) {
 	return out, nil
 }
 
+func (r *Repo) OriginUrl() (string, error) {
+	out, err := r.ExecGit("remote", "get-url", "origin")
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(out), nil
+}
+
 func (r *Repo) Add(pathspec ...string) error {
 	_, err := r.ExecGit(prepend("add", pathspec)...)
 	return err

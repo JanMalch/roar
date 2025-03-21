@@ -31,7 +31,9 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 
 	dryRun := cli.DryRun
 
-	conf, newConf, err := models.ConfigFromFile(cli.ConfigFile)
+	r := git.NewRepo("")
+	originUrl, _ := r.OriginUrl()
+	conf, newConf, err := models.ConfigFromFile(cli.ConfigFile, originUrl)
 	if err != nil {
 		util.LogError(stderr, "Failed to read config '%s': %v", cli.ConfigFile, err)
 		return err
@@ -43,7 +45,6 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 	patch(conf, cli)
 	today := time.Now()
 
-	r := git.NewRepo("")
 	if _, err := Programmatic(r, *conf, releaseAs, today, dryRun, os.Stdout, true); err != nil {
 		util.LogError(stderr, "%v", err)
 		if errors.Is(err, steps.ErrRepoNotClean) {
