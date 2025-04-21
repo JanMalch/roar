@@ -103,7 +103,7 @@ func Programmatic(
 			if err = steps.FindAndReplace(path, u.Find, replacement, dryrun); err != nil {
 				return "", err
 			}
-			util.LogSuccess(stdout, "%supdated version in %s", drp, util.Bold(u.File))
+			util.LogSuccess(stdout, "%supdated %s", drp, util.Bold(u.File))
 		}
 	}
 
