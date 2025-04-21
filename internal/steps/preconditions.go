@@ -11,12 +11,12 @@ import (
 )
 
 var (
-	ErrInputDoesNotExist = errors.New("input file does not exist")
-	ErrNotAGitRepo       = errors.New("directory is not a git repository")
-	ErrRepoNotClean      = errors.New("git repository is not clean")
-	ErrInvalidFind       = errors.New("find argument is invalid")
-	ErrInvalidReplace    = errors.New("replace argument is invalid")
-	ErrInvalidBranch     = errors.New("current branch doesn't match expected branch")
+	ErrInputDoesNotExist     = errors.New("input file does not exist")
+	ErrNotAGitRepo           = errors.New("directory is not a git repository")
+	ErrRepoNotClean          = errors.New("git repository is not clean")
+	ErrInvalidFind           = errors.New("find argument is invalid")
+	ErrReplaceNoPlaceholders = errors.New("replace argument contains no valid placeholders")
+	ErrInvalidBranch         = errors.New("current branch doesn't match expected branch")
 )
 
 func ValidateFind(find string) error {
@@ -27,8 +27,8 @@ func ValidateFind(find string) error {
 }
 
 func ValidateReplace(replace string) error {
-	if !strings.Contains(replace, "{{version}}") {
-		return ErrInvalidReplace
+	if !strings.Contains(replace, "{{version}}") && !strings.Contains(replace, "{{epoch}}") {
+		return ErrReplaceNoPlaceholders
 	}
 	return nil
 }
