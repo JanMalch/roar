@@ -94,9 +94,12 @@ func Programmatic(
 	if len(c.Updates) == 0 {
 		util.LogWarning(stdout, "No update instructions defined in configuration file. Did you forget to add at least one [[update]] section?")
 	} else {
+		epoch := fmt.Sprintf("%d", time.Now().UnixMilli())
 		for _, u := range c.Updates {
 			path := r.PathOf(u.File)
-			replacement := strings.Replace(u.Replace, "{{version}}", next.String(), -1)
+			// create replacement string: u.Replace is the template from the config
+			replacement := strings.ReplaceAll(strings.ReplaceAll(u.Replace, "{{version}}", next.String()), "{{epoch}}", epoch)
+			// update file with replacement string
 			if err = steps.FindAndReplace(path, u.Find, replacement, dryrun); err != nil {
 				return "", err
 			}

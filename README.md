@@ -36,6 +36,8 @@ branch = "main" # optional: verify you are on the correct branch. Also supports 
 file = "openapi.yml" # required: the file to make changes to
 find = "  version: " # required: a string to detect the line to update. If it starts with a ^ it is interpreted as regex in GoLang syntax. Otherwise it is used as line prefix.
 replace = "  version: {{version}}" # required: the content to replace the detected line with. Must contain the "{{version}}" placeholder.
+# Other placeholders:
+# {{epoch}} - timestamp of the release as UNIX epoch in milliseconds
 
 [changelog]
 include = ["feat", "fix"] # optional: which conventional commit types to include in the generated changelog. Also defines the order in the changelog.
