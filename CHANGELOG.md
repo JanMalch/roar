@@ -1,3 +1,13 @@
+## [0.11.2](https://github.com/JanMalch/roar/tree/v0.11.2) - April 21, 2025
+
+**Full Changelog:** [`v0.11.1...v0.11.2`](https://github.com/JanMalch/roar/compare/v0.11.1...v0.11.2)
+
+| type | description | commit |
+|---|---|---|
+| fix | allow replacement strings with any placeholder | [`542b4d54`](https://github.com/JanMalch/roar/commit/542b4d546ec6cc853a48a43bcc9e36ce83b1e4d6) |
+
+
+
 ## [0.11.1](https://github.com/JanMalch/roar/tree/v0.11.1) - April 21, 2025
 
 **Full Changelog:** [`v0.11.0...v0.11.1`](https://github.com/JanMalch/roar/compare/v0.11.0...v0.11.1)
