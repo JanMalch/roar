@@ -4,7 +4,7 @@ _Single-purpose CLI for opioniated semantic releases._
 
 ## Install
 
-Download the standalone binary from the latest [v0.11.2 release page](https://github.com/JanMalch/roar/releases/tag/v0.11.2) and just run it. No installation required.
+Download the standalone binary from the latest [v0.12.0 release page](https://github.com/JanMalch/roar/releases/tag/v0.12.0) and just run it. No installation required.
 
 You can also use the following script. Make sure you set the correct `platform`, which must be the name of a [release asset](https://github.com/JanMalch/roar/releases/latest).
 
