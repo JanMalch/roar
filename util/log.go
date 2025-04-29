@@ -38,3 +38,7 @@ func Bold(s string) string {
 func Underline(s string) string {
 	return u.Sprint(s)
 }
+
+func Gray(s string) string {
+	return color.HiBlackString(s)
+}
