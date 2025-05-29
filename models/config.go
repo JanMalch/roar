@@ -2,6 +2,7 @@ package models
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/url"
 	"os"
@@ -26,10 +27,20 @@ type ChangelogConfig struct {
 	UrlCommitsForTag string   `toml:"url_commits_for_tag"`
 }
 
+type NpmConfig struct {
+	Workspaces           bool `toml:"workspaces"`
+	IncludeWorkspaceRoot bool `toml:"include_workspace_root"`
+}
+
 type Config struct {
 	Branch    string          `toml:"branch"`
 	Updates   []UpdateConfig  `toml:"update"`
 	Changelog ChangelogConfig `toml:"changelog"`
+	Npm       *NpmConfig      `toml:"npm"`
+}
+
+type packageJson struct {
+	Workspaces []string `json:"workspaces"`
 }
 
 var defaultConf = &Config{
@@ -138,6 +149,34 @@ func createDefaultUpdates(configFilePath string) []UpdateConfig {
 	}
 }
 
+func createNpm(configFilePath string) (*NpmConfig, error) {
+	dir := filepath.Dir(configFilePath)
+	pkgJsonPath := filepath.Join(dir, "package.json")
+	b, err := os.ReadFile(pkgJsonPath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var pkgJson packageJson
+	err = json.Unmarshal(b, &pkgJson)
+	if err != nil {
+		return nil, err
+	}
+	if len(pkgJson.Workspaces) == 0 {
+		return &NpmConfig{
+			Workspaces:           false,
+			IncludeWorkspaceRoot: false,
+		}, nil
+	}
+	return &NpmConfig{
+		Workspaces:           true,
+		IncludeWorkspaceRoot: true,
+	}, nil
+}
+
 // Returns a config and a bool, if the returned config is newly created.
 func ConfigFromFile(path string, gitRemoteUrl string) (*Config, bool, error) {
 	rawBytes, err := os.ReadFile(path) // just pass the file name
@@ -158,6 +197,11 @@ func ConfigFromFile(path string, gitRemoteUrl string) (*Config, bool, error) {
 		newConf := *defaultConf
 		newConf.Updates = createDefaultUpdates(path)
 		newConf.Changelog = patchChangelog(newConf.Changelog, gitRemoteUrl)
+		npm, err := createNpm(path)
+		if err != nil {
+			return nil, false, err
+		}
+		newConf.Npm = npm
 		buff := new(bytes.Buffer)
 		enc := toml.NewEncoder(buff)
 		enc.Indent = ""

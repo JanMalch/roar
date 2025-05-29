@@ -132,6 +132,13 @@ func Programmatic(
 			}
 		}
 	}
+	if c.Npm != nil {
+		cmd, err := npmVersion(r.Dir, next, *c.Npm, dryrun)
+		if err != nil {
+			return "", err
+		}
+		util.LogSuccess(stdout, "%s%s", drp, util.Bold(cmd))
+	}
 
 	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), &c.Changelog, next, lsemver, ccLookup, today, dryrun); err != nil {
 		return "", err
