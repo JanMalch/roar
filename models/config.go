@@ -14,7 +14,7 @@ import (
 
 type UpdateConfig struct {
 	File    string `toml:"file"`
-	Pattern string `toml:"pattern"`
+	Pattern string `toml:"pattern,omitempty"`
 	Find    string `toml:"find"`
 	Replace string `toml:"replace"`
 }
@@ -33,7 +33,7 @@ type NpmConfig struct {
 }
 
 type Config struct {
-	Branch    string          `toml:"branch"`
+	Branch    string          `toml:"branch,omitempty"`
 	Updates   []UpdateConfig  `toml:"update"`
 	Changelog ChangelogConfig `toml:"changelog"`
 	Npm       *NpmConfig      `toml:"npm"`
