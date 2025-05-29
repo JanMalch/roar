@@ -3,6 +3,7 @@ package run
 import (
 	"fmt"
 	"io"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 	"github.com/janmalch/roar/util"
 	"github.com/pkg/errors"
 )
+
+var ErrPatternNoMatches = errors.New("pattern matches zero files")
 
 func Programmatic(
 	r *git.Repo,
@@ -35,15 +38,17 @@ func Programmatic(
 
 	// preconditions
 	for _, u := range c.Updates {
-		path := r.PathOf(u.File)
 		if err := steps.ValidateFind(u.Find); err != nil {
 			return "", err
 		}
 		if err := steps.ValidateReplace(u.Replace); err != nil {
 			return "", err
 		}
-		if err := steps.ConfirmInputExists(path); err != nil {
-			return "", err
+		if u.File != "" {
+			path := r.PathOf(u.File)
+			if err := steps.ConfirmInputExists(path); err != nil {
+				return "", err
+			}
 		}
 	}
 	if err := steps.ConfirmGitRepo(r); err != nil {
@@ -96,14 +101,27 @@ func Programmatic(
 	} else {
 		epoch := fmt.Sprintf("%d", time.Now().UnixMilli())
 		for _, u := range c.Updates {
-			path := r.PathOf(u.File)
-			// create replacement string: u.Replace is the template from the config
-			replacement := strings.ReplaceAll(strings.ReplaceAll(u.Replace, "{{version}}", next.String()), "{{epoch}}", epoch)
-			// update file with replacement string
-			if err = steps.FindAndReplace(path, u.Find, replacement, dryrun); err != nil {
-				return "", err
+			if u.File != "" {
+				err = updateFile(r.PathOf(u.File), u.Find, u.Replace, next, epoch, drp, dryrun, stdout)
+				if err != nil {
+					return "", err
+				}
 			}
-			util.LogSuccess(stdout, "%supdated %s", drp, util.Bold(u.File))
+			if u.Pattern != "" {
+				matches, err := filepath.Glob(u.Pattern)
+				if err != nil {
+					return "", err
+				}
+				if len(matches) == 0 {
+					return "", ErrPatternNoMatches
+				}
+				for _, match := range matches {
+					err = updateFile(match, u.Find, u.Replace, next, epoch, drp, dryrun, stdout)
+					if err != nil {
+						return "", err
+					}
+				}
+			}
 		}
 	}
 
@@ -149,4 +167,15 @@ func Programmatic(
 		util.Bold(fmt.Sprintf("git tag -d %s && git reset --hard HEAD^", ntag)),
 	)
 	return ntag, nil
+}
+
+func updateFile(path, find, replace string, next semver.Version, epoch, drp string, dryrun bool, stdout io.Writer) error {
+	// create replacement string: u.Replace is the template from the config
+	replacement := strings.ReplaceAll(strings.ReplaceAll(replace, "{{version}}", next.String()), "{{epoch}}", epoch)
+	// update file with replacement string
+	if err := steps.FindAndReplace(path, find, replacement, dryrun); err != nil {
+		return err
+	}
+	util.LogSuccess(stdout, "%supdated %s", drp, util.Bold(path))
+	return nil
 }

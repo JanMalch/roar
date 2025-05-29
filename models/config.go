@@ -13,6 +13,7 @@ import (
 
 type UpdateConfig struct {
 	File    string `toml:"file"`
+	Pattern string `toml:"pattern"`
 	Find    string `toml:"find"`
 	Replace string `toml:"replace"`
 }
@@ -51,9 +52,10 @@ var changelogUrlNote = `# FIXME: Remove this line, after you verified the entire
 `
 
 var (
-	ErrFindIsEmpty    = errors.New("\"find\" may not be empty in config")
-	ErrReplaceIsEmpty = errors.New("\"replace\" may not be empty in config")
-	ErrFixmesInToml   = errors.New("found FIXME comments in the configuration file")
+	ErrFileAndPatternIsEmpty = errors.New("either \"file\" or \"pattern\" may not be empty in config")
+	ErrFindIsEmpty           = errors.New("\"find\" may not be empty in config")
+	ErrReplaceIsEmpty        = errors.New("\"replace\" may not be empty in config")
+	ErrFixmesInToml          = errors.New("found FIXME comments in the configuration file")
 )
 
 func patchChangelogForGitHub(c ChangelogConfig, gitHubBase string) ChangelogConfig {
@@ -173,10 +175,13 @@ func ConfigFromFile(path string, gitRemoteUrl string) (*Config, bool, error) {
 		conf.Changelog.Include = defaultConf.Changelog.Include
 	}
 	for _, u := range conf.Updates {
-		if len(strings.TrimSpace(u.Find)) == 0 {
+		if strings.TrimSpace(u.File) == "" && strings.TrimSpace(u.Pattern) == "" {
+			return nil, false, ErrFileAndPatternIsEmpty
+		}
+		if strings.TrimSpace(u.Find) == "" {
 			return nil, false, ErrFindIsEmpty
 		}
-		if len(strings.TrimSpace(u.Replace)) == 0 {
+		if strings.TrimSpace(u.Replace) == "" {
 			return nil, false, ErrReplaceIsEmpty
 		}
 	}
