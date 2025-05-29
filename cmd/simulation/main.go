@@ -121,6 +121,7 @@ func main() {
 			nil,
 			today,
 			false,
+			false,
 			log,
 			false,
 		)

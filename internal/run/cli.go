@@ -16,6 +16,7 @@ import (
 )
 
 var dryRunHint = color.New(color.BgWhite, color.FgBlack).Sprint(" dry-run ") + " "
+var ErrBadAllowDirty = errors.New("allow-dirty can only be used in dry-run mode")
 
 func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 	var err error
@@ -45,7 +46,7 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 	patch(conf, cli)
 	today := time.Now()
 
-	if _, err := Programmatic(r, *conf, releaseAs, today, dryRun, os.Stdout, true); err != nil {
+	if _, err := Programmatic(r, *conf, releaseAs, today, dryRun, cli.AllowDirty, os.Stdout, true); err != nil {
 		util.LogError(stderr, "%v", err)
 		if errors.Is(err, steps.ErrRepoNotClean) {
 			hasCommits, _ := r.HasCommits()

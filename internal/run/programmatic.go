@@ -25,9 +25,13 @@ func Programmatic(
 	releaseAs *semver.Version,
 	today time.Time,
 	dryrun bool,
+	allowDirty bool,
 	stdout io.Writer,
 	useColor bool,
 ) (string, error) {
+	if allowDirty && !dryrun {
+		return "", ErrBadAllowDirty
+	}
 	if !useColor {
 		color.NoColor = true
 	}
@@ -55,7 +59,11 @@ func Programmatic(
 		return "", err
 	}
 	if err := steps.ConfirmClean(r); err != nil {
-		return "", err
+		if allowDirty {
+			util.LogError(stdout, "%s%s", drp, err)
+		} else {
+			return "", err
+		}
 	}
 	branch, err := steps.ValidateBranch(r, c.Branch)
 	if err != nil {
