@@ -1,3 +1,16 @@
+## [0.13.0](https://github.com/JanMalch/roar/tree/v0.13.0) - May 29, 2025
+
+**Full Changelog:** [`v0.12.0...v0.13.0`](https://github.com/JanMalch/roar/compare/v0.12.0...v0.13.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | add support for npm version | [`cb0953fd`](https://github.com/JanMalch/roar/commit/cb0953fdea54d15983f4386259c9260f59433810) |
+| feat | allow dirty git repository in dry-run mode | [`1c4c1a88`](https://github.com/JanMalch/roar/commit/1c4c1a88d8bf722e12d53ec88ad47bd181b13fd4) |
+| feat | support glob pattern for updates | [`caad4e37`](https://github.com/JanMalch/roar/commit/caad4e374a9fed2027c1368b07fc25aad2b80536) |
+| fix | omit empty values from config | [`535c1b5c`](https://github.com/JanMalch/roar/commit/535c1b5cd1b9b4947d9eddd07285a8c447653f71) |
+
+
+
 ## [0.12.0](https://github.com/JanMalch/roar/tree/v0.12.0) - April 29, 2025
 
 **Full Changelog:** [`v0.11.2...v0.12.0`](https://github.com/JanMalch/roar/compare/v0.11.2...v0.12.0)
