@@ -1,3 +1,16 @@
+## [0.14.0](https://github.com/JanMalch/roar/tree/v0.14.0) - July 4, 2025
+
+**Full Changelog:** [`v0.13.0...v0.14.0`](https://github.com/JanMalch/roar/compare/v0.13.0...v0.14.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | improve help | [`9fdcad5c`](https://github.com/JanMalch/roar/commit/9fdcad5c2b15d7c76612471aca7d2c4b09407b69) |
+| feat | use annotated tags | [`7eb4ab4b`](https://github.com/JanMalch/roar/commit/7eb4ab4b296ca96ebf65921da077daa99056fcc0) |
+| feat | fetch tags before determining latest tag | [`f0c3cacc`](https://github.com/JanMalch/roar/commit/f0c3cacc12de14c5c6399fd057a073cce36d7e19) |
+| fix | stage package.json files | [`ad50bd3a`](https://github.com/JanMalch/roar/commit/ad50bd3a7d66ba7515a56a12a39d9d4f468e7aec) |
+
+
+
 ## [0.13.0](https://github.com/JanMalch/roar/tree/v0.13.0) - May 29, 2025
 
 **Full Changelog:** [`v0.12.0...v0.13.0`](https://github.com/JanMalch/roar/compare/v0.12.0...v0.13.0)
