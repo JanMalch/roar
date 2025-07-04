@@ -72,6 +72,13 @@ func Programmatic(
 	if c.Branch != "" {
 		util.LogSuccess(stdout, "current branch %s matches %s pattern", color.New(color.Bold).Sprint(branch), color.New(color.Bold).Sprint(c.Branch))
 	}
+	if !dryrun {
+		err = r.FetchTags()
+		if err != nil {
+			return "", err
+		}
+	}
+	util.LogSuccess(stdout, "%s%s", drp, util.Bold("get fetch --tags"))
 
 	// tags
 	ltag, lsemver, err := steps.DetermineLatest(r)

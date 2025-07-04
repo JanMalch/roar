@@ -51,6 +51,7 @@ Running `roar` will look like this:
 
 ```
 √ current branch 'main' matches 'main' pattern
+√ get fetch --tags
 i determined latest version to be v0.2.0
 
 √ determined next version to be v0.2.1

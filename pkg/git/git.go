@@ -115,6 +115,11 @@ func (r *Repo) Commit(message string) error {
 	return err
 }
 
+func (r *Repo) FetchTags() error {
+	_, err := r.ExecGit("fetch", "--tags")
+	return err
+}
+
 func (r *Repo) AddTag(name string) error {
 	_, err := r.ExecGit("tag", name)
 	return err
