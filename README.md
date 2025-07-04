@@ -62,15 +62,9 @@ i determined latest version to be v0.2.0
 
 i please verify the applied changes and finalize the release by running
         git push --follow-tags
-i to amend changes, perform the following steps
-        git tag -d v0.2.1
-        # make your changes and stage them
-        git commit --amend --no-edit && git tag v0.2.1
-i to undo all of roar's changes, simply run
-        git tag -d v0.2.1 && git reset --hard HEAD^
 ```
 
-
+Run `roar -h` for extensive information.
 
 ## The name
 
