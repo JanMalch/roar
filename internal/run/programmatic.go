@@ -193,7 +193,7 @@ func Programmatic(
 	util.LogEmptyLine(stdout)
 
 	// yay!
-	util.LogInfo(stdout, "please verify the applied changes and finalize the release by running\n\t%s", util.Bold("git push && git push --tags"))
+	util.LogInfo(stdout, "please verify the applied changes and finalize the release by running\n\t%s", util.Bold("git push --follow-tags"))
 	util.LogInfo(stdout, "to amend changes, perform the following steps\n\t%s\n\t%s\n\t%s",
 		util.Bold(fmt.Sprintf("git tag -d %s", ntag)),
 		util.Gray("# make your changes and stage them"),

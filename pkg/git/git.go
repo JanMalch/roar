@@ -121,7 +121,7 @@ func (r *Repo) FetchTags() error {
 }
 
 func (r *Repo) AddTag(name string) error {
-	_, err := r.ExecGit("tag", name)
+	_, err := r.ExecGit("tag", "-a", name, "-m", "Release "+name)
 	return err
 }
 
