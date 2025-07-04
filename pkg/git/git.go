@@ -94,6 +94,22 @@ func (r *Repo) Add(pathspec ...string) error {
 	return err
 }
 
+func (r *Repo) ListModified() ([]string, error) {
+	out, err := r.ExecGit("ls-files", "--modified")
+	if err != nil {
+		return nil, err
+	}
+	lines := strings.Split(strings.ReplaceAll(strings.TrimSpace(out), "\r\n", "\n"), "\n")
+	result := make([]string, 0)
+	for _, line := range lines {
+		tl := strings.TrimSpace(line)
+		if tl != "" {
+			result = append(result, tl)
+		}
+	}
+	return result, nil
+}
+
 func (r *Repo) Commit(message string) error {
 	_, err := r.ExecGit("commit", "-m", message)
 	return err

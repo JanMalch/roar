@@ -138,6 +138,20 @@ func Programmatic(
 			return "", err
 		}
 		util.LogSuccess(stdout, "%s%s", drp, util.Bold(cmd))
+		if !dryrun {
+			modified, err := r.ListModified()
+			if err != nil {
+				return "", err
+			}
+			for _, file := range modified {
+				if strings.HasSuffix(file, "package.json") {
+					err = r.Add(file)
+					if err != nil {
+						return "", err
+					}
+				}
+			}
+		}
 	}
 
 	if err = steps.UpdateChangelog(r.PathOf("CHANGELOG.md"), &c.Changelog, next, lsemver, ccLookup, today, dryrun); err != nil {
