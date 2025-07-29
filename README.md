@@ -12,11 +12,12 @@ You can also use the following script. Make sure you set the correct `platform`,
 #!/bin/sh
 platform="roar-arm64-darwin"
 url=$(curl -s https://api.github.com/repos/JanMalch/roar/releases/latest | grep "browser_download_url.*${platform}" | cut -d : -f 2,3 | tr -d '"' | xargs echo -n)
-curl -sS -L -o roar "$url"
-chmod +x ./roar
+# output in same directory as this script, ignoring current working directory
+curl -sS -L -o "$(dirname "$0")/roar" "$url"
+chmod +x "$(dirname "$0")/roar"
 # for OS X (optional), see https://superuser.com/a/28400
-# xattr -d com.apple.quarantine ./roar
-./roar -v
+# xattr -d com.apple.quarantine "$(dirname "$0")/roar"
+roar -v
 ```
 
 Verify it works by running `roar -v` or `roar -h`.
