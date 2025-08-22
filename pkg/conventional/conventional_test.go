@@ -30,6 +30,32 @@ func TestParseFeatureNoScope(t *testing.T) {
 	}
 }
 
+func TestParseBreakingChangeMessage(t *testing.T) {
+	c := git.Commit{
+		Message: `fix(users): test fix
+		
+Here be dragons.
+
+BREAKING CHANGE: This breaks the dragon.
+
+Refs: #12345`,
+		Hash: "H123",
+		Date: time.Now(),
+	}
+	cc := conventional.Parse(c)
+	if assert.NotNil(t, cc) {
+		assert.Equal(t, c.Date, cc.Date)
+		assert.Equal(t, c.Hash, cc.Hash)
+		assert.Equal(t, c.Message, cc.Message)
+		assert.Equal(t, "fix", cc.Type)
+		assert.Equal(t, util.MAJOR_CHANGE, cc.Change)
+		assert.Equal(t, "users", cc.Scope)
+		assert.Equal(t, "test fix", cc.Title)
+		assert.True(t, cc.BreakingChange)
+		assert.Equal(t, "This breaks the dragon.", cc.BreakingChangeMessage)
+	}
+}
+
 func TestParseFixWithScope(t *testing.T) {
 	c := git.Commit{
 		Message: "fix(users): test fix",

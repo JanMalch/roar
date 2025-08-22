@@ -19,6 +19,8 @@ type ConventionalCommit struct {
 	Title string
 	// indicating if this commit is a breaking change
 	BreakingChange bool
+	// message for the breaking change, identified by "BREAKING CHANGE" in the body
+	BreakingChangeMessage string
 	// the change level
 	Change util.Change
 }
@@ -53,8 +55,12 @@ func Parse(c git.Commit) *ConventionalCommit {
 		}
 	}
 
+	lines := strings.Split(c.Message, "\n")
+	if len(lines) == 0 {
+		return nil
+	}
 	// FIXME: verify that message is valid!
-	matches := re.FindStringSubmatch(c.Message)
+	matches := re.FindStringSubmatch(lines[0])
 	if len(matches) == 0 {
 		return nil
 	}
@@ -69,13 +75,22 @@ func Parse(c git.Commit) *ConventionalCommit {
 
 	typ := matches[re.SubexpIndex("type")]
 	breaking := matches[re.SubexpIndex("break")] == "!"
+	breakingMessage := ""
+	for _, line := range lines {
+		if strings.HasPrefix(line, "BREAKING CHANGE:") {
+			breaking = true
+			breakingMessage = strings.TrimSpace(line[17:])
+			break
+		}
+	}
 	return &ConventionalCommit{
-		Commit:         c,
-		Type:           typ,
-		Scope:          matches[re.SubexpIndex("scope")],
-		Title:          title,
-		BreakingChange: breaking,
-		Change:         toChange(typ, breaking),
+		Commit:                c,
+		Type:                  typ,
+		Scope:                 matches[re.SubexpIndex("scope")],
+		Title:                 title,
+		BreakingChange:        breaking,
+		BreakingChangeMessage: breakingMessage,
+		Change:                toChange(typ, breaking),
 	}
 }
 
