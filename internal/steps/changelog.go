@@ -44,6 +44,36 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 		sb.WriteString(cmp + "\n\n")
 	}
 
+	breakingCcs := make(map[string][]conventional.ConventionalCommit, 0)
+	for _, k := range keys {
+		ccs := ccLookup[k]
+		for _, cc := range ccs {
+			if cc.BreakingChange {
+				breakingCcs[k] = append(breakingCcs[k], cc)
+			}
+		}
+	}
+	if len(breakingCcs) > 0 {
+		sb.WriteString("### Breaking Changes\n\n")
+		noScopeCcs := breakingCcs[""]
+		if len(noScopeCcs) > 0 {
+			for _, cc := range noScopeCcs {
+				sb.WriteString(fmt.Sprintf("- %s\n", cc.BreakingChangeMessage))
+			}
+		}
+		for k, ccs := range breakingCcs {
+			if k == "" {
+				continue
+			}
+			sb.WriteString(fmt.Sprintf("\n#### %s\n\n", k))
+			for _, cc := range ccs {
+				sb.WriteString(fmt.Sprintf("- %s\n", cc.BreakingChangeMessage))
+			}
+		}
+
+		sb.WriteString("\n---\n\n")
+	}
+
 	hasNotableChanges := false
 	for _, k := range keys {
 		ccs := ccLookup[k]
@@ -67,6 +97,7 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 		if k != "" {
 			sb.WriteString(fmt.Sprintf("### %s\n\n", k))
 		}
+
 		sb.WriteString("| type | description | commit |\n")
 		sb.WriteString("|---|---|---|\n")
 		for _, c := range relevantCcs {

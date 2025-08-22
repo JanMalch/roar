@@ -19,7 +19,7 @@ type ConventionalCommit struct {
 	Title string
 	// indicating if this commit is a breaking change
 	BreakingChange bool
-	// message for the breaking change, identified by "BREAKING CHANGE" in the body
+	// message for the breaking change, identified by "BREAKING CHANGE" in the body, or the title if the former isn't present
 	BreakingChangeMessage string
 	// the change level
 	Change util.Change
@@ -75,7 +75,7 @@ func Parse(c git.Commit) *ConventionalCommit {
 
 	typ := matches[re.SubexpIndex("type")]
 	breaking := matches[re.SubexpIndex("break")] == "!"
-	breakingMessage := ""
+	breakingMessage := title
 	for _, line := range lines {
 		if strings.HasPrefix(line, "BREAKING CHANGE:") {
 			breaking = true

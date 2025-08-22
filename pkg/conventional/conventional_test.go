@@ -90,6 +90,7 @@ func TestParseBreakingChance(t *testing.T) {
 		assert.Equal(t, util.MAJOR_CHANGE, cc.Change)
 		assert.Equal(t, "users", cc.Scope)
 		assert.Equal(t, "test fix", cc.Title)
+		assert.Equal(t, "test fix", cc.BreakingChangeMessage)
 		assert.True(t, cc.BreakingChange, "'%s' should indicate a breaking change", c.Message)
 	}
 }
