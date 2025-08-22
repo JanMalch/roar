@@ -46,9 +46,6 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 
 	hasNotableChanges := false
 	for _, k := range keys {
-		if k != "" {
-			sb.WriteString(fmt.Sprintf("### %s\n\n", k))
-		}
 		ccs := ccLookup[k]
 		relevantCcs := make([]conventional.ConventionalCommit, 0)
 
@@ -67,6 +64,9 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 			return strings.Compare(a.Type, b.Type)
 		})
 
+		if k != "" {
+			sb.WriteString(fmt.Sprintf("### %s\n\n", k))
+		}
 		sb.WriteString("| type | description | commit |\n")
 		sb.WriteString("|---|---|---|\n")
 		for _, c := range relevantCcs {
