@@ -1,3 +1,15 @@
+## [0.15.0](https://github.com/JanMalch/roar/tree/v0.15.0) - August 24, 2025
+
+**Full Changelog:** [`v0.14.0...v0.15.0`](https://github.com/JanMalch/roar/compare/v0.14.0...v0.15.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | display breaking changes in changelog | [`67d9e1e0`](https://github.com/JanMalch/roar/commit/67d9e1e001b40982d43bdc4c01a22b535e558476) |
+| feat | also detect breaking changes based on line prefix in body | [`309cb0de`](https://github.com/JanMalch/roar/commit/309cb0decfadfccb89ea6bcb6c8b4c567b2c45c9) |
+| fix | prevent empty changelog sections | [`8a6228ab`](https://github.com/JanMalch/roar/commit/8a6228ab08ddf60773e39dc971ef733aa4d0b8bb) |
+
+
+
 ## [0.14.0](https://github.com/JanMalch/roar/tree/v0.14.0) - July 4, 2025
 
 **Full Changelog:** [`v0.13.0...v0.14.0`](https://github.com/JanMalch/roar/compare/v0.13.0...v0.14.0)
