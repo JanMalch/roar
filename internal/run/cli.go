@@ -46,7 +46,7 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 	patch(conf, cli)
 	today := time.Now()
 
-	if _, err := Programmatic(r, *conf, releaseAs, today, dryRun, cli.AllowDirty, os.Stdout, true); err != nil {
+	if _, err := Programmatic(r, *conf, releaseAs, today, dryRun, cli.AllowDirty, cli.AllowHooks, os.Stdout, true); err != nil {
 		util.LogError(stderr, "%v", err)
 		if errors.Is(err, steps.ErrRepoNotClean) {
 			hasCommits, _ := r.HasCommits()

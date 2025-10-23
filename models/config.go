@@ -32,11 +32,21 @@ type NpmConfig struct {
 	IncludeWorkspaceRoot bool `toml:"include_workspace_root"`
 }
 
+type Command struct {
+	Cmd  string   `toml:"cmd"`
+	Args []string `toml:"args"`
+}
+
+type Hooks struct {
+	BeforeStaging Command `toml:"before_staging"`
+}
+
 type Config struct {
 	Branch    string          `toml:"branch,omitempty"`
 	Updates   []UpdateConfig  `toml:"update"`
 	Changelog ChangelogConfig `toml:"changelog"`
 	Npm       *NpmConfig      `toml:"npm"`
+	Hooks     *Hooks          `toml:"hooks"`
 }
 
 type packageJson struct {

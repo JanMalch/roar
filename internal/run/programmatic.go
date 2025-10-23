@@ -3,6 +3,7 @@ package run
 import (
 	"fmt"
 	"io"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -18,6 +19,7 @@ import (
 )
 
 var ErrPatternNoMatches = errors.New("pattern matches zero files")
+var ErrHooksNotAllowed = errors.New("there are hooks configured, but roar was started without the allow-hooks flag.")
 
 func Programmatic(
 	r *git.Repo,
@@ -26,6 +28,7 @@ func Programmatic(
 	today time.Time,
 	dryrun bool,
 	allowDirty bool,
+	allowHooks bool,
 	stdout io.Writer,
 	useColor bool,
 ) (string, error) {
@@ -34,6 +37,9 @@ func Programmatic(
 	}
 	if !useColor {
 		color.NoColor = true
+	}
+	if c.Hooks != nil && c.Hooks.BeforeStaging.Cmd != "" && !allowHooks {
+		return "", ErrHooksNotAllowed
 	}
 	drp := ""
 	if dryrun {
@@ -166,15 +172,29 @@ func Programmatic(
 	}
 	util.LogSuccess(stdout, "%supdated %s", drp, util.Bold("CHANGELOG.md"))
 
+	// hooks
+	if c.Hooks != nil && c.Hooks.BeforeStaging.Cmd != "" && allowHooks {
+		util.LogExec(stdout, c.Hooks.BeforeStaging.Cmd, c.Hooks.BeforeStaging.Args)
+		if !dryrun {
+			cmd := exec.Command(c.Hooks.BeforeStaging.Cmd, c.Hooks.BeforeStaging.Args...)
+			if r.Dir != "" {
+				cmd.Dir = r.Dir
+			}
+			// FIXME: why isn't this working?
+			// cmd.Env = append(cmd.Environ(), "ROAR_NEXT_VERSION="+next.String())
+			out, err := cmd.Output()
+			if err != nil {
+				return "", err
+			}
+			util.LogExecOutput(stdout, string(out))
+		}
+	}
+
 	// commit changes
 	commitMsg := fmt.Sprintf("chore(release): release version %s", ntag)
 	if !dryrun {
-		for _, u := range c.Updates {
-			if err := r.Add(u.File); err != nil {
-				return "", err
-			}
-		}
-		if err := r.Add("CHANGELOG.md"); err != nil {
+		// Since repository must be clean when running, we can just add all here
+		if err := r.Add("."); err != nil {
 			return "", err
 		}
 		if err := r.Commit(commitMsg); err != nil {

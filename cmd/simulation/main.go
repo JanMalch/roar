@@ -122,6 +122,7 @@ func main() {
 			today,
 			false,
 			false,
+			false,
 			log,
 			false,
 		)
