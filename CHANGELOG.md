@@ -1,3 +1,13 @@
+## [0.16.0](https://github.com/JanMalch/roar/tree/v0.16.0) - October 23, 2025
+
+**Full Changelog:** [`v0.15.0...v0.16.0`](https://github.com/JanMalch/roar/compare/v0.15.0...v0.16.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | add executable before_staging hook | [`975931cb`](https://github.com/JanMalch/roar/commit/975931cbb4d5cd2dba5016167c00792a159a54b9) |
+
+
+
 ## [0.15.0](https://github.com/JanMalch/roar/tree/v0.15.0) - August 24, 2025
 
 **Full Changelog:** [`v0.14.0...v0.15.0`](https://github.com/JanMalch/roar/compare/v0.14.0...v0.15.0)
