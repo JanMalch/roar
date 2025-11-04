@@ -1,3 +1,19 @@
+<!-- ROAR:UPCOMING:START -->
+[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.17.0...main)
+<!-- ROAR:UPCOMING:END -->
+
+## [0.17.0](https://github.com/JanMalch/roar/tree/v0.17.0) - November 4, 2025
+
+**Full Changelog:** [`v0.16.0...v0.17.0`](https://github.com/JanMalch/roar/compare/v0.16.0...v0.17.0)
+
+| type | description | commit |
+|---|---|---|
+| feat | use latest project version for help | [`a429686c`](https://github.com/JanMalch/roar/commit/a429686c05167ba81de4820fc9c476c3a3927f80) |
+| feat | add optional link to upcoming changes | [`a43d3019`](https://github.com/JanMalch/roar/commit/a43d30191e66e9e16e5fffc9d754fad200d634c7) |
+| fix | fix project detection for default config | [`6bbd29f4`](https://github.com/JanMalch/roar/commit/6bbd29f4bf180aa309972fb6121705856a3db8d5) |
+
+
+
 ## [0.16.0](https://github.com/JanMalch/roar/tree/v0.16.0) - October 23, 2025
 
 **Full Changelog:** [`v0.15.0...v0.16.0`](https://github.com/JanMalch/roar/compare/v0.15.0...v0.16.0)

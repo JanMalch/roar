@@ -12,7 +12,7 @@ import (
 	"github.com/janmalch/roar/util"
 )
 
-var VERSION = "0.16.0"
+var VERSION = "0.17.0"
 
 func main() {
 	// Using current repo version for help text, if people copy the commands
