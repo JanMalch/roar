@@ -119,12 +119,50 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 	return sb.String()
 }
 
-func UpdateChangelog(path string, conf *models.ChangelogConfig, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, today time.Time, dryrun bool) error {
+const upcomingSectionStartMarker = "<!-- ROAR:UPCOMING:START -->"
+const upcomingSectionEndMarker = "<!-- ROAR:UPCOMING:END -->"
+
+func removeUpcoming(content string) string {
+	start := strings.Index(content, upcomingSectionStartMarker)
+	if start == -1 {
+		return content
+	}
+	end := strings.Index(content[start:], upcomingSectionEndMarker)
+	if end == -1 {
+		panic("upcoming section start marker without end marker")
+	}
+	return content[0:start] + content[start+end+len(upcomingSectionEndMarker):]
+}
+
+func generateUpcoming(version semver.Version, urlUpcoming string) string {
+	if urlUpcoming == "" {
+		return ""
+	}
+	return fmt.Sprintf(
+		"%s\n[Upcoming Changes …](%s)\n%s",
+		upcomingSectionStartMarker,
+		strings.ReplaceAll(urlUpcoming, "{{version}}", version.String()),
+		upcomingSectionEndMarker,
+	)
+}
+
+func UpdateChangelog(
+	path string,
+	conf *models.ChangelogConfig,
+	version semver.Version,
+	prev *semver.Version,
+	ccLookup map[string][]conventional.ConventionalCommit,
+	today time.Time,
+	dryrun bool,
+) error {
 	content := generateNewSection(conf, version, prev, ccLookup, today)
 
 	b, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
 		if !dryrun {
+			if conf.UrlUpcoming != "" {
+				content = generateUpcoming(version, conf.UrlUpcoming) + "\n\n" + content
+			}
 			return os.WriteFile(path, []byte(content), 0644)
 		} else {
 			return nil
@@ -136,6 +174,10 @@ func UpdateChangelog(path string, conf *models.ChangelogConfig, version semver.V
 	tail := string(b)
 
 	if !dryrun {
+		tail = strings.TrimPrefix(removeUpcoming(tail), "\n")
+		if conf.UrlUpcoming != "" {
+			content = generateUpcoming(version, conf.UrlUpcoming) + "\n\n" + content
+		}
 		return os.WriteFile(path, []byte(content+"\n\n"+tail), 0644)
 	} else {
 		return nil

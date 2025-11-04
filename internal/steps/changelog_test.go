@@ -12,6 +12,36 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestGenerateUpcoming(t *testing.T) {
+	latest, err := semver.NewVersion("0.1.0")
+	require.NoError(t, err)
+	actual := generateUpcoming(*latest, "https://github.com/JanMalch/roar/compare/v{{version}}...main")
+	expected := `<!-- ROAR:UPCOMING:START -->
+_[Upcoming changes](https://github.com/JanMalch/roar/compare/v0.1.0...main)_
+<!-- ROAR:UPCOMING:END -->`
+	assert.Equal(t, expected, actual)
+}
+
+func TestRemoveUpcomingForNonExistent(t *testing.T) {
+	assert.Equal(t, "Hello", removeUpcoming("Hello"))
+}
+
+func TestRemoveUpcomingForExistent(t *testing.T) {
+	actual := removeUpcoming(`What
+
+<!-- ROAR:UPCOMING:START -->
+_[Upcoming changes](https://github.com/JanMalch/roar/compare/v0.1.0...main)_
+<!-- ROAR:UPCOMING:END -->
+
+Hello`)
+	expected := `What
+
+
+
+Hello`
+	assert.Equal(t, expected, actual)
+}
+
 func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 	latest, err := semver.NewVersion("0.1.0")
 	require.NoError(t, err)
@@ -21,6 +51,7 @@ func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 		UrlBrowseAtTag:   "",
 		UrlCompareTags:   "",
 		UrlCommitsForTag: "",
+		UrlUpcoming:      "",
 	}
 	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
 	actual := generateNewSection(&conf, *latest, nil, map[string][]conventional.ConventionalCommit{
@@ -114,6 +145,7 @@ func TestBreakingChanges(t *testing.T) {
 		UrlBrowseAtTag:   "",
 		UrlCompareTags:   "",
 		UrlCommitsForTag: "",
+		UrlUpcoming:      "",
 	}
 	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
 	actual := generateNewSection(&conf, *latest, nil, map[string][]conventional.ConventionalCommit{

@@ -25,6 +25,7 @@ type ChangelogConfig struct {
 	UrlBrowseAtTag   string   `toml:"url_browse_at_tag"`
 	UrlCompareTags   string   `toml:"url_compare_tags"`
 	UrlCommitsForTag string   `toml:"url_commits_for_tag"`
+	UrlUpcoming      string   `toml:"url_upcoming"`
 }
 
 type NpmConfig struct {
@@ -60,6 +61,7 @@ var defaultConf = &Config{
 		UrlCommit:        "https://github.com/owner/repo/commit/{{hash}}",
 		UrlBrowseAtTag:   "https://github.com/owner/repo/tree/v{{version}}",
 		UrlCompareTags:   "https://github.com/owner/repo/compare/v{{previous}}...v{{version}}",
+		UrlUpcoming:      "https://github.com/owner/repo/compare/v{{version}}...main",
 		UrlCommitsForTag: "https://github.com/owner/repo/commits/v{{version}}",
 	},
 }
@@ -83,6 +85,7 @@ func patchChangelogForGitHub(c ChangelogConfig, gitHubBase string) ChangelogConf
 	c.UrlCommit = gitHubBase + "/commit/{{hash}}"
 	c.UrlBrowseAtTag = gitHubBase + "/tree/v{{version}}"
 	c.UrlCompareTags = gitHubBase + "/compare/v{{previous}}...v{{version}}"
+	c.UrlUpcoming = gitHubBase + "/compare/v{{version}}...main"
 	c.UrlCommitsForTag = gitHubBase + "/commits/v{{version}}"
 	return c
 }
@@ -91,6 +94,7 @@ func patchChangelogForGitLab(c ChangelogConfig, gitLabBase string) ChangelogConf
 	c.UrlCommit = gitLabBase + "/-/commit/{{hash}}"
 	c.UrlBrowseAtTag = gitLabBase + "/-/tree/v{{version}}?ref_type=tags"
 	c.UrlCompareTags = gitLabBase + "/-/compare/v{{previous}}...v{{version}}"
+	c.UrlUpcoming = gitLabBase + "/-/compare/v{{version}}...main"
 	c.UrlCommitsForTag = gitLabBase + "/-/commits/v{{version}}?ref_type=tags"
 	return c
 }
