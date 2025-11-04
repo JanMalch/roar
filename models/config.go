@@ -134,7 +134,7 @@ func patchChangelog(c ChangelogConfig, gitRemoteUrl string) ChangelogConfig {
 
 func createDefaultUpdates(configFilePath string) []UpdateConfig {
 	dir := filepath.Dir(configFilePath)
-	if _, err := os.Stat(filepath.Join(dir, "gradle.properties")); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath.Join(dir, "gradle.properties")); err == nil {
 		return []UpdateConfig{
 			{
 				File:    "gradle.properties",
@@ -143,7 +143,7 @@ func createDefaultUpdates(configFilePath string) []UpdateConfig {
 			},
 		}
 	}
-	if _, err := os.Stat(filepath.Join(dir, "openapi.yml")); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath.Join(dir, "openapi.yml")); err == nil {
 		return []UpdateConfig{
 			{
 				File:    "openapi.yml",
