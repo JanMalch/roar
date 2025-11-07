@@ -33,6 +33,12 @@ url_commit = "https://github.com/my-org/my-repo/commit/{{hash}}"
 url_browse_at_tag = "https://github.com/my-org/my-repo/tree/v{{version}}"
 url_compare_tags = "https://github.com/my-org/my-repo/compare/v{{previous}}...v{{version}}"
 url_commits_for_tag = "https://github.com/my-org/my-repo/commits/v{{version}}"
+# add link to upcoming/unreleased changes if `url_upcoming` string is not empty
+url_upcoming = "https://github.com/my-org/my-repo/compare/v{{version}}...main"
+
+[hooks.before_staging]
+cmd = "echo"
+args = ["Hello :)"]
 ```
 
 Running `roar` will look like this:
