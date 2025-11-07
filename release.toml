@@ -11,7 +11,7 @@ replace = "var VERSION = \"{{version}}\""
 [[update]]
 file = "README.md"
 find = "Download the standalone binary from the latest "
-replace = "Download the standalone binary from the latest [v{{version}} release page](https://github.com/JanMalch/roar/releases/tag/v{{version}}) and just run it. No installation required."
+replace = "Download the standalone binary from the latest [v{{version}} release page](https://github.com/JanMalch/roar/releases/tag/v{{version}}) and just run it."
 
 [changelog]
 include = ["feat", "fix"]

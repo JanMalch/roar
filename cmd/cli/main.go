@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/alecthomas/kong"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/google/go-github/v77/github"
 	"github.com/janmalch/roar/internal/run"
 	"github.com/janmalch/roar/internal/steps"
 	"github.com/janmalch/roar/models"
@@ -43,7 +46,39 @@ func main() {
 		},
 	)
 
-	if err := run.AsCli(cli, os.Stdout, os.Stderr); err != nil {
+	err := run.AsCli(cli, os.Stdout, os.Stderr)
+	checkForUpdate()
+	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func checkForUpdate() {
+	client := github.NewClient(nil)
+	ctx := context.Background()
+	release, _, err := client.Repositories.GetLatestRelease(ctx, "JanMalch", "roar")
+	if err != nil {
+		util.LogWarning(os.Stdout, "Failed to check for updates.")
+		return
+	}
+	latestTag := "v" + VERSION
+	if latestTag == release.GetTagName() {
+		return
+	}
+
+	url := release.GetHTMLURL()
+	style := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		Padding(0, 1).
+		Align(lipgloss.Left)
+
+	fmt.Println(style.Render(
+		lipgloss.JoinVertical(
+			lipgloss.Left,
+			lipgloss.NewStyle().Inline(true).Bold(true).Render("A new roar version is available!\n"),
+			fmt.Sprintf("%s -> %s", latestTag, release.GetTagName()),
+			lipgloss.NewStyle().Inline(true).Foreground(lipgloss.Color("12")).Render(url),
+		),
+	))
+
 }

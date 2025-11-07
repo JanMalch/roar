@@ -4,23 +4,10 @@ _Single-purpose CLI for opioniated semantic releases._
 
 ## Install
 
-Download the standalone binary from the latest [v0.17.0 release page](https://github.com/JanMalch/roar/releases/tag/v0.17.0) and just run it. No installation required.
+Download the standalone binary from the latest [v0.17.0 release page](https://github.com/JanMalch/roar/releases/tag/v0.17.0) and just run it.
+No installation required. `roar` will automatically notify you of available updates after each execution.
 
-You can also use the following script. Make sure you set the correct `platform`, which must be the name of a [release asset](https://github.com/JanMalch/roar/releases/latest).
-
-```shell
-#!/bin/sh
-platform="roar-arm64-darwin"
-url=$(curl -s https://api.github.com/repos/JanMalch/roar/releases/latest | grep "browser_download_url.*${platform}" | cut -d : -f 2,3 | tr -d '"' | xargs echo -n)
-# output in same directory as this script, ignoring current working directory
-curl -sS -L -o "$(dirname "$0")/roar" "$url"
-chmod +x "$(dirname "$0")/roar"
-# for OS X (optional), see https://superuser.com/a/28400
-# xattr -d com.apple.quarantine "$(dirname "$0")/roar"
-roar -v
-```
-
-Verify it works by running `roar -v` or `roar -h`.
+Verify `roar` works by running `roar -v` or `roar -h`.
 
 ## Usage
 
