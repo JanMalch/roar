@@ -12,7 +12,7 @@ import (
 	"github.com/janmalch/roar/pkg/conventional"
 )
 
-func generateNewSection(conf *models.ChangelogConfig, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, today time.Time) string {
+func generateNewSection(conf *models.ChangelogConfig, version semver.Version, prev *semver.Version, ccLookup map[string][]*conventional.ConventionalCommit, today time.Time) string {
 	keys := make([]string, 0, len(ccLookup))
 	for k := range ccLookup {
 		keys = append(keys, k)
@@ -44,7 +44,7 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 		sb.WriteString(cmp + "\n\n")
 	}
 
-	breakingCcs := make(map[string][]conventional.ConventionalCommit, 0)
+	breakingCcs := make(map[string][]*conventional.ConventionalCommit, 0)
 	for _, k := range keys {
 		ccs := ccLookup[k]
 		for _, cc := range ccs {
@@ -77,7 +77,7 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 	hasNotableChanges := false
 	for _, k := range keys {
 		ccs := ccLookup[k]
-		relevantCcs := make([]conventional.ConventionalCommit, 0)
+		relevantCcs := make([]*conventional.ConventionalCommit, 0)
 
 		for _, cc := range ccs {
 			if slices.Contains(conf.Include, cc.Type) {
@@ -90,7 +90,7 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 		}
 		hasNotableChanges = true
 
-		slices.SortFunc(relevantCcs, func(a, b conventional.ConventionalCommit) int {
+		slices.SortFunc(relevantCcs, func(a, b *conventional.ConventionalCommit) int {
 			return strings.Compare(a.Type, b.Type)
 		})
 
@@ -103,9 +103,9 @@ func generateNewSection(conf *models.ChangelogConfig, version semver.Version, pr
 		for _, c := range relevantCcs {
 			fmtCommit := ""
 			if conf.UrlCommit != "" {
-				fmtCommit = fmt.Sprintf("[`%s`](%s)", c.Hash[0:8], strings.NewReplacer("{{hash}}", c.Hash).Replace(conf.UrlCommit))
+				fmtCommit = fmt.Sprintf("[`%s`](%s)", c.Commit.Hash.String()[0:8], strings.NewReplacer("{{hash}}", c.Commit.Hash.String()).Replace(conf.UrlCommit))
 			} else {
-				fmtCommit = fmt.Sprintf("`%s`", c.Hash[0:8])
+				fmtCommit = fmt.Sprintf("`%s`", c.Commit.Hash.String()[0:8])
 			}
 			sb.WriteString(fmt.Sprintf("| %s | %s | %s |\n", c.Type, c.Title, fmtCommit))
 		}
@@ -151,7 +151,7 @@ func UpdateChangelog(
 	conf *models.ChangelogConfig,
 	version semver.Version,
 	prev *semver.Version,
-	ccLookup map[string][]conventional.ConventionalCommit,
+	ccLookup map[string][]*conventional.ConventionalCommit,
 	today time.Time,
 	dryrun bool,
 ) error {

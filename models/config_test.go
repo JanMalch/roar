@@ -21,6 +21,7 @@ func TestPatchChangelogGitLabSsh(t *testing.T) {
 		UrlBrowseAtTag:   "https://gitlab.example.com/group/subgroup/repository/-/tree/v{{version}}?ref_type=tags",
 		UrlCompareTags:   "https://gitlab.example.com/group/subgroup/repository/-/compare/v{{previous}}...v{{version}}",
 		UrlCommitsForTag: "https://gitlab.example.com/group/subgroup/repository/-/commits/v{{version}}?ref_type=tags",
+		UrlUpcoming:      "https://gitlab.example.com/group/subgroup/repository/-/compare/v{{version}}...main",
 	}, cc)
 }
 
@@ -33,6 +34,7 @@ func TestPatchChangelogGitLabHttps(t *testing.T) {
 		UrlBrowseAtTag:   "https://gitlab.example.com/group/subgroup/repository/-/tree/v{{version}}?ref_type=tags",
 		UrlCompareTags:   "https://gitlab.example.com/group/subgroup/repository/-/compare/v{{previous}}...v{{version}}",
 		UrlCommitsForTag: "https://gitlab.example.com/group/subgroup/repository/-/commits/v{{version}}?ref_type=tags",
+		UrlUpcoming:      "https://gitlab.example.com/group/subgroup/repository/-/compare/v{{version}}...main",
 	}, cc)
 }
 
@@ -45,6 +47,7 @@ func TestPatchChangelogGitHubSsh(t *testing.T) {
 		UrlBrowseAtTag:   "https://github.com/JanMalch/roar/tree/v{{version}}",
 		UrlCompareTags:   "https://github.com/JanMalch/roar/compare/v{{previous}}...v{{version}}",
 		UrlCommitsForTag: "https://github.com/JanMalch/roar/commits/v{{version}}",
+		UrlUpcoming:      "https://github.com/JanMalch/roar/compare/v{{version}}...main",
 	}, cc)
 }
 
@@ -57,5 +60,6 @@ func TestPatchChangelogGitHubHttps(t *testing.T) {
 		UrlBrowseAtTag:   "https://github.com/JanMalch/roar/tree/v{{version}}",
 		UrlCompareTags:   "https://github.com/JanMalch/roar/compare/v{{previous}}...v{{version}}",
 		UrlCommitsForTag: "https://github.com/JanMalch/roar/commits/v{{version}}",
+		UrlUpcoming:      "https://github.com/JanMalch/roar/compare/v{{version}}...main",
 	}, cc)
 }

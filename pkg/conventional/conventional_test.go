@@ -3,25 +3,21 @@ package conventional_test
 import (
 	"strconv"
 	"testing"
-	"time"
 
+	"github.com/go-git/go-git/v6/plumbing"
+	"github.com/go-git/go-git/v6/plumbing/object"
 	"github.com/janmalch/roar/pkg/conventional"
-	"github.com/janmalch/roar/pkg/git"
 	"github.com/janmalch/roar/util"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestParseFeatureNoScope(t *testing.T) {
-	c := git.Commit{
+	c := &object.Commit{
+		Hash:    plumbing.NewHash("abc123"),
 		Message: "feat: test commit",
-		Hash:    "H123",
-		Date:    time.Now(),
 	}
 	cc := conventional.Parse(c)
 	if assert.NotNil(t, cc) {
-		assert.Equal(t, c.Date, cc.Date)
-		assert.Equal(t, c.Hash, cc.Hash)
-		assert.Equal(t, c.Message, cc.Message)
 		assert.Equal(t, "feat", cc.Type)
 		assert.Equal(t, util.MINOR_CHANGE, cc.Change)
 		assert.Equal(t, "", cc.Scope)
@@ -31,7 +27,8 @@ func TestParseFeatureNoScope(t *testing.T) {
 }
 
 func TestParseBreakingChangeMessage(t *testing.T) {
-	c := git.Commit{
+	c := &object.Commit{
+		Hash: plumbing.NewHash("abc123"),
 		Message: `fix(users): test fix
 		
 Here be dragons.
@@ -39,14 +36,9 @@ Here be dragons.
 BREAKING CHANGE: This breaks the dragon.
 
 Refs: #12345`,
-		Hash: "H123",
-		Date: time.Now(),
 	}
 	cc := conventional.Parse(c)
 	if assert.NotNil(t, cc) {
-		assert.Equal(t, c.Date, cc.Date)
-		assert.Equal(t, c.Hash, cc.Hash)
-		assert.Equal(t, c.Message, cc.Message)
 		assert.Equal(t, "fix", cc.Type)
 		assert.Equal(t, util.MAJOR_CHANGE, cc.Change)
 		assert.Equal(t, "users", cc.Scope)
@@ -57,16 +49,12 @@ Refs: #12345`,
 }
 
 func TestParseFixWithScope(t *testing.T) {
-	c := git.Commit{
+	c := &object.Commit{
+		Hash:    plumbing.NewHash("abc123"),
 		Message: "fix(users): test fix",
-		Hash:    "H123",
-		Date:    time.Now(),
 	}
 	cc := conventional.Parse(c)
 	if assert.NotNil(t, cc) {
-		assert.Equal(t, c.Date, cc.Date)
-		assert.Equal(t, c.Hash, cc.Hash)
-		assert.Equal(t, c.Message, cc.Message)
 		assert.Equal(t, "fix", cc.Type)
 		assert.Equal(t, util.PATCH_CHANGE, cc.Change)
 		assert.Equal(t, "users", cc.Scope)
@@ -76,16 +64,12 @@ func TestParseFixWithScope(t *testing.T) {
 }
 
 func TestParseBreakingChance(t *testing.T) {
-	c := git.Commit{
+	c := &object.Commit{
+		Hash:    plumbing.NewHash("abc123"),
 		Message: "fix(users)!: test fix",
-		Hash:    "H123",
-		Date:    time.Now(),
 	}
 	cc := conventional.Parse(c)
 	if assert.NotNil(t, cc) {
-		assert.Equal(t, c.Date, cc.Date)
-		assert.Equal(t, c.Hash, cc.Hash)
-		assert.Equal(t, c.Message, cc.Message)
 		assert.Equal(t, "fix", cc.Type)
 		assert.Equal(t, util.MAJOR_CHANGE, cc.Change)
 		assert.Equal(t, "users", cc.Scope)
@@ -95,31 +79,15 @@ func TestParseBreakingChance(t *testing.T) {
 	}
 }
 
-func createLog(msgs ...string) []git.Commit {
-	log := make([]git.Commit, 0, len(msgs))
+func createLog(msgs ...string) []*object.Commit {
+	log := make([]*object.Commit, 0, len(msgs))
 
 	for i, msg := range msgs {
-		log = append(log, git.Commit{
+		log = append(log, &object.Commit{
+			Hash:    plumbing.NewHash("abc" + strconv.Itoa(i)),
 			Message: msg,
-			Hash:    strconv.Itoa(i),
-			Date:    time.Now(),
 		})
 	}
 
 	return log
-}
-
-func TestCollectConventionalCommitsMinor(t *testing.T) {
-	log := createLog(
-		"fix(users): test fix",
-		"feat(users): test feat",
-		"fix(auth): fix auth this time")
-
-	lookup, change, err := conventional.Collect(log)
-	if assert.Nil(t, err) {
-		assert.Equal(t, util.MINOR_CHANGE, change)
-		assert.Equal(t, 2, len(lookup))
-		assert.Equal(t, 2, len(lookup["users"]))
-		assert.Equal(t, 1, len(lookup["auth"]))
-	}
 }

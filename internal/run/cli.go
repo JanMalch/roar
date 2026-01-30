@@ -8,9 +8,9 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/fatih/color"
+	"github.com/go-git/go-git/v6"
 	"github.com/janmalch/roar/internal/steps"
 	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/git"
 	"github.com/janmalch/roar/util"
 	"github.com/pkg/errors"
 )
@@ -32,8 +32,14 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 
 	dryRun := cli.DryRun
 
-	r := git.NewRepo("")
-	originUrl, _ := r.OriginUrl()
+	r, err := git.PlainOpen("")
+	if err != nil {
+		return err
+	}
+	originUrl := ""
+	if origin, err := r.Remote("origin"); err != nil {
+		originUrl = origin.Config().URLs[0]
+	}
 	conf, newConf, err := models.ConfigFromFile(cli.ConfigFile, originUrl)
 	if err != nil {
 		util.LogError(stderr, "Failed to read config '%s': %v", cli.ConfigFile, err)
@@ -49,9 +55,15 @@ func AsCli(cli models.CLI, stdout, stderr io.Writer) error {
 	if _, err := Programmatic(r, *conf, releaseAs, today, dryRun, cli.AllowDirty, cli.AllowHooks, os.Stdout, true); err != nil {
 		util.LogError(stderr, "%v", err)
 		if errors.Is(err, steps.ErrRepoNotClean) {
-			hasCommits, _ := r.HasCommits()
-			if !hasCommits {
-				util.LogInfo(stdout, "It's recommended to use %s as the message for your first commit. No conventional commit type required.", util.Bold("\"Initial commit\""))
+			if iter, err := r.CommitObjects(); err != nil {
+				defer iter.Close()
+				hasCommits := false
+				if commit, err := iter.Next(); err == nil {
+					hasCommits = commit != nil
+				}
+				if !hasCommits {
+					util.LogInfo(stdout, "It's recommended to use %s as the message for your first commit. No conventional commit type required.", util.Bold("\"Initial commit\""))
+				}
 			}
 		}
 		return err

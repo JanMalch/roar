@@ -7,11 +7,11 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/go-git/go-git/v6"
 	"github.com/google/go-github/v77/github"
 	"github.com/janmalch/roar/internal/run"
 	"github.com/janmalch/roar/internal/steps"
 	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/git"
 	"github.com/janmalch/roar/util"
 )
 
@@ -19,10 +19,12 @@ var VERSION = "0.18.0"
 
 func main() {
 	// Using current repo version for help text, if people copy the commands
-	r := git.NewRepo("")
-	tag, _, _ := steps.DetermineLatest(r)
-	if tag == "" {
-		tag = "v1.0.0"
+	tag := "v1.0.0"
+	if r, err := git.PlainOpen(""); err == nil {
+		ref, _, _ := steps.DetermineLatest(r)
+		if ref != nil {
+			tag = ref.Name().Short()
+		}
 	}
 
 	var cli models.CLI

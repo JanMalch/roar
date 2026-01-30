@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/go-git/go-git/v6"
 )
 
 var (
@@ -33,8 +33,8 @@ func ValidateReplace(replace string) error {
 	return nil
 }
 
-func ConfirmInputExists(input string) error {
-	if _, err := os.Stat(input); errors.Is(err, os.ErrNotExist) {
+func ConfirmInputExists(w *git.Worktree, input string) error {
+	if _, err := w.Filesystem.Stat(input); errors.Is(err, os.ErrNotExist) {
 		return ErrInputDoesNotExist
 	} else if err != nil {
 		return errors.Wrap(err, "failed to check if input file exists")
@@ -43,19 +43,13 @@ func ConfirmInputExists(input string) error {
 	}
 }
 
-func ConfirmGitRepo(r *git.Repo) error {
-	if !r.IsGitRepo() {
-		return ErrNotAGitRepo
-	} else {
-		return nil
-	}
-}
-
-func ValidateBranch(r *git.Repo, expected string) (string, error) {
-	branch, err := r.CurrentBranchName()
+func ValidateBranch(r *git.Repository, expected string) (string, error) {
+	head, err := r.Head()
 	if err != nil {
-		return branch, errors.Wrap(err, "failed to determine current branch name")
+		return "", errors.Wrap(err, "failed to determine current branch name")
 	}
+	branch := head.Name().Short()
+
 	if expected == "" {
 		return branch, nil
 	}
@@ -75,10 +69,16 @@ func ValidateBranch(r *git.Repo, expected string) (string, error) {
 	}
 }
 
-func ConfirmClean(r *git.Repo) error {
-	if clean, err := r.IsClean(); err != nil {
+func ConfirmClean(r *git.Repository) error {
+	w, err := r.Worktree()
+	if err != nil {
 		return errors.Wrap(err, "failed to check repository status")
-	} else if !clean {
+	}
+	s, err := w.Status()
+	if err != nil {
+		return errors.Wrap(err, "failed to check repository status")
+	}
+	if !s.IsClean() {
 		return ErrRepoNotClean
 	}
 	return nil

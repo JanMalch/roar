@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
+	"github.com/go-git/go-git/v6/plumbing"
+	"github.com/go-git/go-git/v6/plumbing/object"
 	"github.com/janmalch/roar/models"
 	"github.com/janmalch/roar/pkg/conventional"
-	"github.com/janmalch/roar/pkg/git"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +18,7 @@ func TestGenerateUpcoming(t *testing.T) {
 	require.NoError(t, err)
 	actual := generateUpcoming(*latest, "https://github.com/JanMalch/roar/compare/v{{version}}...main")
 	expected := `<!-- ROAR:UPCOMING:START -->
-_[Upcoming changes](https://github.com/JanMalch/roar/compare/v0.1.0...main)_
+[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.1.0...main)
 <!-- ROAR:UPCOMING:END -->`
 	assert.Equal(t, expected, actual)
 }
@@ -30,7 +31,7 @@ func TestRemoveUpcomingForExistent(t *testing.T) {
 	actual := removeUpcoming(`What
 
 <!-- ROAR:UPCOMING:START -->
-_[Upcoming changes](https://github.com/JanMalch/roar/compare/v0.1.0...main)_
+[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.1.0...main)
 <!-- ROAR:UPCOMING:END -->
 
 Hello`)
@@ -54,28 +55,24 @@ func TestGenerateNewSectionWithMixOfTypesAndScopes(t *testing.T) {
 		UrlUpcoming:      "",
 	}
 	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
-	actual := generateNewSection(&conf, *latest, nil, map[string][]conventional.ConventionalCommit{
+	actual := generateNewSection(&conf, *latest, nil, map[string][]*conventional.ConventionalCommit{
 		"users": {
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "fix(users): add user fix",
-				Hash:    "00000001",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000001"),
 			}),
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "feat(users): add user feature",
-				Hash:    "00000002",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000002"),
 			})},
 		"": {
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "fix: add some fix",
-				Hash:    "00000003",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000003"),
 			}),
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "feat: add some feature",
-				Hash:    "00000004",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000004"),
 			}),
 		},
 	}, today,
@@ -110,19 +107,17 @@ func TestSkipEmptySections(t *testing.T) {
 		UrlCommitsForTag: "",
 	}
 	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
-	actual := generateNewSection(&conf, *latest, nil, map[string][]conventional.ConventionalCommit{
+	actual := generateNewSection(&conf, *latest, nil, map[string][]*conventional.ConventionalCommit{
 		"deps": {
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "chore(deps): update dependencies",
-				Hash:    "00000001",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000001"),
 			}),
 		},
 		"": {
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "chore: foo bar",
-				Hash:    "00000002",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000002"),
 			}),
 		},
 	}, today,
@@ -148,21 +143,19 @@ func TestBreakingChanges(t *testing.T) {
 		UrlUpcoming:      "",
 	}
 	today := time.Date(2024, time.November, 8, 12, 0, 0, 0, time.UTC)
-	actual := generateNewSection(&conf, *latest, nil, map[string][]conventional.ConventionalCommit{
+	actual := generateNewSection(&conf, *latest, nil, map[string][]*conventional.ConventionalCommit{
 		"user": {
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: "feat(user)!: seems broken",
-				Hash:    "00000001",
-				Date:    time.Now(),
+				Hash:    plumbing.NewHash("00000001"),
 			}),
 		},
 		"": {
-			*conventional.Parse(git.Commit{
+			conventional.Parse(&object.Commit{
 				Message: `fix: foo bar
 				
 BREAKING CHANGE: Well, there it is.`,
-				Hash: "00000002",
-				Date: time.Now(),
+				Hash: plumbing.NewHash("00000002"),
 			}),
 		},
 	}, today,

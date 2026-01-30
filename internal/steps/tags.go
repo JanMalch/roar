@@ -1,28 +1,39 @@
 package steps
 
 import (
-	"fmt"
-
 	"github.com/Masterminds/semver"
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/go-git/go-git/v6"
+	"github.com/go-git/go-git/v6/plumbing"
 	"github.com/pkg/errors"
 )
 
 var ErrReleaseAsNotAfterLatest = errors.New("release-as version is not after latest")
 
-func DetermineLatest(r *git.Repo) (string, *semver.Version, error) {
-	tag, err := r.LatestVersionTag()
+// Determines the greatest semver tag.
+func DetermineLatest(r *git.Repository) (*plumbing.Reference, *semver.Version, error) {
+	iter, err := r.Tags()
 	if err != nil {
-		return "", nil, errors.Wrap(err, "failed to determine latest tag")
+		return nil, nil, errors.Wrap(err, "failed to determine latest tag")
 	}
-	if tag == "" {
-		return "", nil, nil
-	} else {
-		latest, err := semver.NewVersion(tag[1:])
-		if err != nil {
-			return tag, nil, fmt.Errorf("failed to parse latest tag %s as semver version", tag[1:])
-		} else {
-			return tag, latest, nil
+	var res *plumbing.Reference
+	var latest *semver.Version
+	err = iter.ForEach(func(ref *plumbing.Reference) error {
+		name := ref.Name().Short()
+		if name[0] != 'v' {
+			return nil
 		}
+		psmv, err := semver.NewVersion(name[1:])
+		if err != nil {
+			return err
+		}
+		if latest == nil || psmv.GreaterThan(latest) {
+			res = ref
+			latest = psmv
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to determine latest tag")
 	}
+	return res, latest, nil
 }

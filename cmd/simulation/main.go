@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-git/go-git/v6"
 	"github.com/janmalch/roar/internal/run"
 	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/git"
 )
 
 var commits = []string{
@@ -61,22 +61,27 @@ func main() {
 		}
 	}()
 
-	r := git.NewRepo(repoDir)
-	if _, err = r.ExecGit("init", "-b", "main"); err != nil {
+	r, err := git.PlainInit(repoDir, false, git.WithDefaultBranch("main"))
+	if err != nil {
 		panic(err)
 	}
+	wt, err := r.Worktree()
+	if err != nil {
+		panic(err)
+	}
+
 	dummy, err := os.ReadFile("testdata/openapi.yml")
 	if err != nil {
 		panic(err)
 	}
-	err = os.WriteFile(r.PathOf("openapi.yml"), dummy, os.ModePerm)
+	err = os.WriteFile(wt.Filesystem.Join("openapi.yml"), dummy, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
-	if err = r.Add("openapi.yml"); err != nil {
+	if _, err = wt.Add("openapi.yml"); err != nil {
 		panic(err)
 	}
-	if err = r.Commit("Initial commit"); err != nil {
+	if _, err = wt.Commit("Initial commit", nil); err != nil {
 		panic(err)
 	}
 
@@ -110,12 +115,12 @@ func main() {
 		for c := 1; c <= take; c++ {
 			message := fmt.Sprintf("%s (run %d, commit %d)", commits[rng.Intn(len(commits))], i, c)
 			log.WriteString(fmt.Sprintf("%s | commit: %s\n", fmtNow(), message))
-			if _, err = r.ExecGit("commit", "--allow-empty", "-m", message); err != nil {
+			if _, err = wt.Commit(message, &git.CommitOptions{AllowEmptyCommits: true}); err != nil {
 				panic(err)
 			}
 		}
 
-		tag, err := run.Programmatic(
+		_, err := run.Programmatic(
 			r,
 			c,
 			nil,
@@ -130,14 +135,19 @@ func main() {
 			log.WriteString(fmt.Sprintf("%s | RUN FAILED:\n%+v\n", fmtNow(), err))
 			panic(err)
 		}
-		r.ExecGit("tag", tag)
 
 		log.WriteString(fmt.Sprintf("%s | END RUN: %d\n\n", fmtNow(), i))
 	}
 }
 
-func makeStable(r *git.Repo, x string) {
-	if _, err := r.ExecGit("tag", "v"+x); err != nil {
+func makeStable(r *git.Repository, x string) {
+	head, err := r.Head()
+	if err != nil {
+		panic(err)
+	}
+	if _, err = r.CreateTag("v"+x, head.Hash(), &git.CreateTagOptions{
+		Message: "Release v" + x,
+	}); err != nil {
 		panic(err)
 	}
 }

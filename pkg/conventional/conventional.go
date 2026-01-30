@@ -4,13 +4,16 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/go-git/go-git/v6"
+	"github.com/go-git/go-git/v6/plumbing"
+	"github.com/go-git/go-git/v6/plumbing/object"
+	"github.com/go-git/go-git/v6/plumbing/storer"
 	"github.com/janmalch/roar/util"
 	"github.com/pkg/errors"
 )
 
 type ConventionalCommit struct {
-	git.Commit
+	Commit *object.Commit
 	// the conventional commit type extracted from the message
 	Type string
 	// the (optional) conventional commit scope extracted from the message
@@ -24,6 +27,8 @@ type ConventionalCommit struct {
 	// the change level
 	Change util.Change
 }
+
+// TODO: drop regex for parser?
 
 // Conventional commit regex based on https://stackoverflow.com/a/62293234
 var re = regexp.MustCompile(`(?m)^((?P<type>build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|¯\\_\(ツ\)_/¯)(\((?P<scope>\w+)\))?(?P<break>!)?(: (.*\s*)*))|(Merge (.*\s*)*)|(Initial commit$)`)
@@ -42,9 +47,8 @@ func toChange(typ string, breaking bool) util.Change {
 	return util.PATCH_CHANGE
 }
 
-func Parse(c git.Commit) *ConventionalCommit {
-	// TODO: casing?
-	if c.Message == "Initial commit" {
+func Parse(c *object.Commit) *ConventionalCommit {
+	if strings.EqualFold(c.Message, "Initial commit") {
 		return &ConventionalCommit{
 			Commit:         c,
 			Type:           "",
@@ -97,26 +101,50 @@ func Parse(c git.Commit) *ConventionalCommit {
 // collects conventional commits from the given log in a map, where the key is the scope
 //
 // returns the maximum change in the log
-func Collect(log []git.Commit) (map[string][]ConventionalCommit, util.Change, error) {
-	if len(log) == 0 {
-		return nil, util.NO_CHANGE, ErrNoCommits
+func CollectSince(r *git.Repository, ltag *plumbing.Reference) (map[string][]*ConventionalCommit, util.Change, error) {
+	iter, err := r.Log(&git.LogOptions{Order: git.LogOrderCommitterTime})
+	if err != nil {
+		return nil, util.NO_CHANGE, errors.Wrap(err, "Failed to get commit log")
+	}
+	hasAnyCommit := false
+	change := util.NO_CHANGE
+	commitsByScope := make(map[string][]*ConventionalCommit, 0)
+
+	tagObj, err := r.TagObject(ltag.Hash())
+	var ltagHash plumbing.Hash
+	if err == nil {
+		ltagHash = tagObj.Target // annotated
+	} else {
+		ltagHash = ltag.Hash() // lightweight
 	}
 
-	change := util.NO_CHANGE
-	commitsByScope := make(map[string][]ConventionalCommit, 0)
-	for _, c := range log {
+	if err = iter.ForEach(func(c *object.Commit) error {
+		if c.Hash.Equal(ltagHash) {
+			return storer.ErrStop
+		}
+		hasAnyCommit = true
+		if len(c.ParentHashes) > 1 {
+			// Skip merge commits
+			return nil
+		}
 		cc := Parse(c)
 		if cc != nil {
 			group, exists := commitsByScope[cc.Scope]
 			if !exists {
-				commitsByScope[cc.Scope] = []ConventionalCommit{*cc}
+				commitsByScope[cc.Scope] = []*ConventionalCommit{cc}
 			} else {
-				commitsByScope[cc.Scope] = append(group, *cc)
+				commitsByScope[cc.Scope] = append(group, cc)
 			}
 			if cc.Change > change {
 				change = cc.Change
 			}
 		}
+		return nil
+	}); err != nil {
+		return nil, util.NO_CHANGE, err
+	}
+	if !hasAnyCommit {
+		return nil, util.NO_CHANGE, ErrNoCommits
 	}
 	if change == util.NO_CHANGE {
 		return nil, util.NO_CHANGE, ErrOnlyUnconventionalCommits
