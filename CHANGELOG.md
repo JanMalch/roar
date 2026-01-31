@@ -1,6 +1,18 @@
 <!-- ROAR:UPCOMING:START -->
-[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.18.0...main)
+[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.18.1...main)
 <!-- ROAR:UPCOMING:END -->
+
+## [0.18.1](https://github.com/JanMalch/roar/tree/v0.18.1) - January 31, 2026
+
+**Full Changelog:** [`v0.18.0...v0.18.1`](https://github.com/JanMalch/roar/compare/v0.18.0...v0.18.1)
+
+| type | description | commit |
+|---|---|---|
+| fix | detect BREAKING CHANGE trailers | [`23424b13`](https://github.com/JanMalch/roar/commit/23424b13ae641ad004c74a1073198716182cee83) |
+
+
+
+
 
 ## [0.18.0](https://github.com/JanMalch/roar/tree/v0.18.0) - November 7, 2025
 
