@@ -43,13 +43,12 @@ func toChange(typ string, breaking bool) util.Change {
 }
 
 func Parse(c git.Commit) *ConventionalCommit {
-	// TODO: casing?
-	if c.Message == "Initial commit" {
+	if strings.EqualFold(c.Subject(), "Initial commit") {
 		return &ConventionalCommit{
 			Commit:         c,
 			Type:           "",
 			Scope:          "",
-			Title:          c.Message,
+			Title:          c.Subject(),
 			BreakingChange: false,
 			Change:         util.MINOR_CHANGE,
 		}

@@ -116,8 +116,8 @@ func TestContentfulCommitLogSinceTag(t *testing.T) {
 	r := setupDirtyRepo(t)
 	makeTestCommit(t, r)
 	assert.NoError(t, r.AddTag("v0.0.1"))
-	r.ExecGit("commit", "-m='second commit'", "--allow-empty")
-	r.ExecGit("commit", "-m='third commit'", "--allow-empty")
+	r.ExecGit("commit", "-m", "second commit", "--allow-empty")
+	r.ExecGit("commit", "-m", "third commit", "--allow-empty")
 	log, err := r.CommitLogSince("v0.0.1")
 	if assert.NoError(t, err) {
 		assert.Len(t, log, 2, "expected the log to contain two commits")
@@ -127,10 +127,23 @@ func TestContentfulCommitLogSinceTag(t *testing.T) {
 func TestContentfulCommitLogSinceInitial(t *testing.T) {
 	r := setupDirtyRepo(t)
 	makeTestCommit(t, r)
-	r.ExecGit("commit", "-m='second commit'", "--allow-empty")
-	r.ExecGit("commit", "-m='third commit'", "--allow-empty")
+	r.ExecGit("commit", "-m", "second commit", "--allow-empty")
+	r.ExecGit("commit", "-m", "third commit", "--allow-empty")
 	log, err := r.CommitLogSince("")
 	if assert.NoError(t, err) {
 		assert.Len(t, log, 3, "expected the log to contain three commits")
+	}
+}
+
+func TestMultilineCommitLog(t *testing.T) {
+	r := setupDirtyRepo(t)
+	_, err := r.ExecGit("commit", "-m", "second commit", "-m", "second line", "--allow-empty")
+	if assert.NoError(t, err) {
+		log, err := r.CommitLogSince("")
+		if assert.NoError(t, err) {
+			assert.Len(t, log, 1, "expected the log to contain one commit")
+			assert.Equal(t, "second commit\n\nsecond line", log[0].Message)
+			assert.Equal(t, "second commit", log[0].Subject())
+		}
 	}
 }

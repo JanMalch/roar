@@ -2,6 +2,7 @@ package git
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os/exec"
 	"path"
@@ -19,10 +20,19 @@ type Repo struct {
 type Commit struct {
 	// The full hash of the commit
 	Hash string
-	// The first line of the commit message
+	// The full message of the commit
 	Message string
 	// The date for the commit
 	Date time.Time
+}
+
+// The first line of the commit message
+func (c Commit) Subject() string {
+	i := strings.IndexByte(c.Message, '\n')
+	if i < 0 {
+		return c.Message
+	}
+	return strings.TrimSpace(c.Message[0:i])
 }
 
 func NewRepo(dir string) *Repo {
@@ -149,31 +159,46 @@ func (r *Repo) LatestVersionTag() (string, error) {
 }
 
 func (r *Repo) CommitLogSince(tag string) ([]Commit, error) {
-	var out string
-	var err error
+	cmd := exec.Command("git", "log", "--pretty=format:%at%x1f%H%x1f%B%x1e")
 	if tag != "" {
-		out, err = r.ExecGit("log", "--pretty=%at %H %s", "HEAD..."+tag)
-	} else {
-		out, err = r.ExecGit("log", "--pretty=%at %H %s")
+		cmd.Args = append(cmd.Args, "HEAD..."+tag)
 	}
+	if r.Dir != "" {
+		cmd.Dir = r.Dir
+	}
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err
 	}
+	err = cmd.Start()
+	if err != nil {
+		return nil, err
+	}
+
+	scanner := bufio.NewScanner(stdout)
+	scanner.Split(bufio.ScanBytes)
+
 	commits := make([]Commit, 0)
 
-	scanner := bufio.NewScanner(strings.NewReader(out))
+	var buf bytes.Buffer
 	for scanner.Scan() {
-		line := scanner.Text()
-		parts := strings.SplitN(line, " ", 3)
-		at, err := strconv.ParseInt(parts[0], 10, 64)
-		if err != nil {
-			return nil, err
+		b := scanner.Bytes()[0]
+		if b == 0x1e { // record separator
+			parts := strings.SplitN(buf.String(), "\x1f", 3)
+			at, _ := strconv.ParseInt(strings.TrimSpace(parts[0]), 10, 64)
+			commits = append(commits, Commit{
+				Date:    time.Unix(at, 0),
+				Hash:    parts[1],
+				Message: strings.TrimSpace(parts[2]),
+			})
+			buf.Reset()
+		} else {
+			buf.WriteByte(b)
 		}
-		commits = append(commits, Commit{
-			Date:    time.Unix(at, 0),
-			Hash:    parts[1],
-			Message: parts[2],
-		})
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return nil, err
 	}
 
 	if err := scanner.Err(); err != nil {
