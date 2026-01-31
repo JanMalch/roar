@@ -17,7 +17,7 @@ func TestGenerateUpcoming(t *testing.T) {
 	require.NoError(t, err)
 	actual := generateUpcoming(*latest, "https://github.com/JanMalch/roar/compare/v{{version}}...main")
 	expected := `<!-- ROAR:UPCOMING:START -->
-_[Upcoming changes](https://github.com/JanMalch/roar/compare/v0.1.0...main)_
+[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.1.0...main)
 <!-- ROAR:UPCOMING:END -->`
 	assert.Equal(t, expected, actual)
 }
@@ -30,7 +30,7 @@ func TestRemoveUpcomingForExistent(t *testing.T) {
 	actual := removeUpcoming(`What
 
 <!-- ROAR:UPCOMING:START -->
-_[Upcoming changes](https://github.com/JanMalch/roar/compare/v0.1.0...main)_
+[Upcoming  Changes …](https://github.com/JanMalch/roar/compare/v0.1.0...main)
 <!-- ROAR:UPCOMING:END -->
 
 Hello`)
