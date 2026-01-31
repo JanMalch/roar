@@ -1,0 +1,13 @@
+{
+    "name": "Roar Development Container",
+    "image": "mcr.microsoft.com/devcontainers/go",
+    "postCreateCommand": "go install gotest.tools/gotestsum@latest && go mod download",
+    "postStartCommand": "echo 'Press <a> to run all tests.' && gotestsum --watch",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
+}
