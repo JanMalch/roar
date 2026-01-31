@@ -159,7 +159,7 @@ func (r *Repo) LatestVersionTag() (string, error) {
 }
 
 func (r *Repo) CommitLogSince(tag string) ([]Commit, error) {
-	cmd := exec.Command("git", "log", "--pretty=format:%at%x1f%H%x1f%B%x1e")
+	cmd := exec.Command("git", "log", "--no-merges", "--pretty=format:%at%x1f%H%x1f%B%x1e")
 	if tag != "" {
 		cmd.Args = append(cmd.Args, "HEAD..."+tag)
 	}
