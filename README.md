@@ -12,7 +12,7 @@ go install github.com/JanMalch/roar@latest
 
 ## Download a binary 
 
-Download the standalone binary from the latest [v0.18.1 release page](https://github.com/JanMalch/roar/releases/tag/v0.18.1) and just run it.
+Download the standalone binary from the latest [v0.18.2 release page](https://github.com/JanMalch/roar/releases/tag/v0.18.2) and just run it.
 No installation required. `roar` will automatically notify you of available updates after each execution.
 
 Verify `roar` works by running `roar -v` or `roar -h`.

@@ -1,6 +1,15 @@
 <!-- ROAR:UPCOMING:START -->
-[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.18.1...main)
+[Upcoming Changes …](https://github.com/JanMalch/roar/compare/v0.18.2...main)
 <!-- ROAR:UPCOMING:END -->
+
+## [0.18.2](https://github.com/JanMalch/roar/tree/v0.18.2) - October 24, 2026
+
+**Full Changelog:** [`v0.18.1...v0.18.2`](https://github.com/JanMalch/roar/compare/v0.18.1...v0.18.2)
+
+roar can now be installed via `go install`!
+
+
+
 
 ## [0.18.1](https://github.com/JanMalch/roar/tree/v0.18.1) - January 31, 2026
 
