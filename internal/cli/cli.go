@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"context"
@@ -15,9 +15,9 @@ import (
 	"github.com/janmalch/roar/util"
 )
 
-var VERSION = "0.18.1"
+const VERSION = "0.18.1"
 
-func main() {
+func Run() {
 	// Using current repo version for help text, if people copy the commands
 	r := git.NewRepo("")
 	tag, _, _ := steps.DetermineLatest(r)
@@ -78,6 +78,8 @@ func checkForUpdate() {
 			lipgloss.NewStyle().Inline(true).Bold(true).Render("A new roar version is available!\n"),
 			fmt.Sprintf("%s -> %s", latestTag, release.GetTagName()),
 			lipgloss.NewStyle().Inline(true).Foreground(lipgloss.Color("12")).Render(url),
+			"\nOr when installed via go:",
+			"$ go install github.com/JanMalch/roar@latest",
 		),
 	))
 

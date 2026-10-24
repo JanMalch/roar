@@ -23,22 +23,22 @@ jobs:
         env:
           GOOS: linux
           GOARCH: amd64
-        run: go build -o bin/roar-amd64-linux cmd/cli/main.go 
+        run: go build -o bin/roar-amd64-linux main.go 
       - name: Build Windows 64 bit executable
         env:
           GOOS: windows
           GOARCH: amd64
-        run: go build -o bin/roar-amd64.exe cmd/cli/main.go 
+        run: go build -o bin/roar-amd64.exe main.go 
       - name: Build Darwin AMD 64 bit executable
         env:
           GOOS: darwin
           GOARCH: amd64
-        run: go build -o bin/roar-amd64-darwin cmd/cli/main.go 
+        run: go build -o bin/roar-amd64-darwin main.go 
       - name: Build Darwin ARM 64 bit executable
         env:
           GOOS: darwin
           GOARCH: arm64
-        run: go build -o bin/roar-arm64-darwin cmd/cli/main.go 
+        run: go build -o bin/roar-arm64-darwin main.go 
       - name: Release
         uses: softprops/action-gh-release@v2
         id: create_release
