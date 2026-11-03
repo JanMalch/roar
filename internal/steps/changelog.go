@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/conventional"
+	"github.com/JanMalch/roar/models"
+	"github.com/JanMalch/roar/pkg/conventional"
 )
 
 func generateNewSection(conf *models.ChangelogConfig, version semver.Version, prev *semver.Version, ccLookup map[string][]conventional.ConventionalCommit, today time.Time) string {

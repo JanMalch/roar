@@ -3,7 +3,7 @@ package run
 import (
 	"testing"
 
-	"github.com/janmalch/roar/models"
+	"github.com/JanMalch/roar/models"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/JanMalch/roar/pkg/git"
 )
 
 var (

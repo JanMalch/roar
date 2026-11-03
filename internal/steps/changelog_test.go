@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/conventional"
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/JanMalch/roar/models"
+	"github.com/JanMalch/roar/pkg/conventional"
+	"github.com/JanMalch/roar/pkg/git"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

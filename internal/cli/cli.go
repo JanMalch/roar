@@ -8,11 +8,11 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/google/go-github/v77/github"
-	"github.com/janmalch/roar/internal/run"
-	"github.com/janmalch/roar/internal/steps"
-	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/git"
-	"github.com/janmalch/roar/util"
+	"github.com/JanMalch/roar/internal/run"
+	"github.com/JanMalch/roar/internal/steps"
+	"github.com/JanMalch/roar/models"
+	"github.com/JanMalch/roar/pkg/git"
+	"github.com/JanMalch/roar/util"
 )
 
 const VERSION = "0.18.3"

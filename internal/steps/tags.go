@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/semver"
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/JanMalch/roar/pkg/git"
 	"github.com/pkg/errors"
 )
 

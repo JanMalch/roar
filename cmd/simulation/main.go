@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/janmalch/roar/internal/run"
-	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/git"
+	"github.com/JanMalch/roar/internal/run"
+	"github.com/JanMalch/roar/models"
+	"github.com/JanMalch/roar/pkg/git"
 )
 
 var commits = []string{

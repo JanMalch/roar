@@ -1,4 +1,4 @@
-module github.com/janmalch/roar
+module github.com/JanMalch/roar
 
 go 1.24.0
 

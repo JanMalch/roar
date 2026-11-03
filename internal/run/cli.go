@@ -8,10 +8,10 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/fatih/color"
-	"github.com/janmalch/roar/internal/steps"
-	"github.com/janmalch/roar/models"
-	"github.com/janmalch/roar/pkg/git"
-	"github.com/janmalch/roar/util"
+	"github.com/JanMalch/roar/internal/steps"
+	"github.com/JanMalch/roar/models"
+	"github.com/JanMalch/roar/pkg/git"
+	"github.com/JanMalch/roar/util"
 	"github.com/pkg/errors"
 )
 

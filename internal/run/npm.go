@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver"
-	"github.com/janmalch/roar/models"
+	"github.com/JanMalch/roar/models"
 	"github.com/pkg/errors"
 )
 

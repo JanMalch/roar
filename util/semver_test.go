@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/Masterminds/semver"
-	"github.com/janmalch/roar/util"
+	"github.com/JanMalch/roar/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

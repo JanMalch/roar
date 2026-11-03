@@ -4,8 +4,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/janmalch/roar/pkg/git"
-	"github.com/janmalch/roar/util"
+	"github.com/JanMalch/roar/pkg/git"
+	"github.com/JanMalch/roar/util"
 	"github.com/pkg/errors"
 )
 

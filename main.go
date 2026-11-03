@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/janmalch/roar/internal/cli"
+	"github.com/JanMalch/roar/internal/cli"
 )
 
 func main() {
