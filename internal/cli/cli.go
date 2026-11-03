@@ -15,7 +15,7 @@ import (
 	"github.com/JanMalch/roar/util"
 )
 
-const VERSION = "0.18.3"
+const VERSION = "0.18.4"
 
 func Run() {
 	// Using current repo version for help text, if people copy the commands
